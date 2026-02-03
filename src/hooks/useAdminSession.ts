@@ -1,52 +1,105 @@
 import { useState, useEffect, useCallback } from "react";
-import { AdminSession } from "@/lib/types";
-
-// Simple client-side admin session (password validation will be in edge function)
-const ADMIN_SESSION_KEY = "gift_registry_admin";
-const SESSION_DURATION = 60 * 60 * 1000; // 1 hour
+import { supabase } from "@/integrations/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export function useAdminSession() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+
+  const checkAdminStatus = useCallback(async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("admins")
+        .select("id")
+        .eq("id", userId)
+        .eq("is_active", true)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 is "no rows returned", which is fine
+        console.error("Error checking admin status:", error);
+        return false;
+      }
+
+      return !!data;
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+      return false;
+    }
+  }, []);
 
   useEffect(() => {
-    const stored = localStorage.getItem(ADMIN_SESSION_KEY);
-    if (stored) {
-      try {
-        const session: AdminSession = JSON.parse(stored);
-        if (session.isAdmin && session.expiresAt > Date.now()) {
-          setIsAdmin(true);
-        } else {
-          localStorage.removeItem(ADMIN_SESSION_KEY);
-        }
-      } catch {
-        localStorage.removeItem(ADMIN_SESSION_KEY);
+    // Check initial session
+    const initSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.user) {
+        setUser(session.user);
+        const adminStatus = await checkAdminStatus(session.user.id);
+        setIsAdmin(adminStatus);
+      } else {
+        setUser(null);
+        setIsAdmin(false);
       }
-    }
-    setIsLoading(false);
-  }, []);
+      
+      setIsLoading(false);
+    };
 
-  const login = useCallback((password: string): boolean => {
-    // For MVP, we use a simple client-side password check
-    // In production, this should be validated server-side
-    const adminPassword = "admin123"; // This would come from edge function in production
-    
-    if (password === adminPassword) {
-      const session: AdminSession = {
-        isAdmin: true,
-        expiresAt: Date.now() + SESSION_DURATION,
-      };
-      localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(session));
-      setIsAdmin(true);
+    initSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session?.user) {
+          setUser(session.user);
+          const adminStatus = await checkAdminStatus(session.user.id);
+          setIsAdmin(adminStatus);
+        } else {
+          setUser(null);
+          setIsAdmin(false);
+        }
+        setIsLoading(false);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [checkAdminStatus]);
+
+  const loginWithGoogle = useCallback(async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        },
+      });
+
+      if (error) {
+        console.error("Error signing in with Google:", error);
+        return false;
+      }
+
       return true;
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      return false;
     }
-    return false;
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem(ADMIN_SESSION_KEY);
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
+    setUser(null);
     setIsAdmin(false);
   }, []);
 
-  return { isAdmin, isLoading, login, logout };
+  return { 
+    isAdmin, 
+    isLoading, 
+    user,
+    loginWithGoogle, 
+    logout 
+  };
 }

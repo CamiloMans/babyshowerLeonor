@@ -58,24 +58,24 @@ export function SelectionBar({
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
           className="selection-bar"
         >
-          <div className="container mx-auto px-4 py-4">
+          <div className="container mx-auto px-4 py-4 sm:px-6">
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col gap-4 sm:flex-row sm:items-center"
+              className="flex flex-col gap-3 sm:flex-row sm:items-center"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                  <Gift className="h-5 w-5 text-primary" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                  <Gift className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <p className="font-serif text-lg font-semibold">
+                  <p className="text-sm font-semibold text-foreground">
                     {selectedCount} regalo{selectedCount > 1 ? "s" : ""}{" "}
                     seleccionado{selectedCount > 1 ? "s" : ""}
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-1 items-center gap-3">
+              <div className="flex flex-1 items-center gap-2">
                 <Input
                   type="text"
                   placeholder="Tu nombre"

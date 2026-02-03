@@ -47,40 +47,42 @@ export function AdminGiftCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
       className={cn(
         "gift-card",
         !gift.is_active && "opacity-50"
       )}
     >
-      <div className="space-y-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h3 className="font-serif text-lg font-semibold">{gift.name}</h3>
+      <div className="space-y-1">
+        <div className="flex items-start justify-between gap-1.5">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h3 className="text-xs font-semibold leading-tight line-clamp-2">{gift.name}</h3>
               {!gift.is_active && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  <EyeOff className="h-3 w-3" />
+                <span className="inline-flex items-center gap-0.5 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                  <EyeOff className="h-2.5 w-2.5" />
                   Oculto
                 </span>
               )}
             </div>
             {gift.price && (
-              <span className="text-sm font-medium text-gold-foreground">
+              <span className="mt-0.5 inline-block text-[10px] font-semibold text-foreground">
                 {formatPrice(gift.price)}
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 shrink-0">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => onEdit(gift)}
               title="Editar"
+              className="h-6 w-6"
             >
-              <Edit2 className="h-4 w-4" />
+              <Edit2 className="h-3 w-3" />
             </Button>
 
             <AlertDialog>
@@ -88,11 +90,11 @@ export function AdminGiftCard({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-destructive hover:text-destructive"
+                  className="h-6 w-6 text-destructive hover:text-destructive"
                   title="Eliminar"
                   disabled={isAssigned}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-3 w-3" />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -118,43 +120,43 @@ export function AdminGiftCard({
         </div>
 
         {gift.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-[10px] leading-snug text-muted-foreground line-clamp-1">
             {gift.description}
           </p>
         )}
 
-        <div className="flex flex-wrap items-center gap-2 pt-1">
+        <div className="flex flex-wrap items-center gap-1.5">
           {gift.url && (
             <a
               href={gift.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+              className="inline-flex items-center gap-0.5 text-[10px] font-medium text-primary hover:text-primary/80 transition-colors"
             >
-              <ExternalLink className="h-3 w-3" />
-              Ver enlace
+              <ExternalLink className="h-2.5 w-2.5" />
+              Ver
             </a>
           )}
 
           {isAssigned && (
-            <div className="flex items-center gap-2">
-              <span className="assigned-badge text-xs">
-                Reservado por {gift.gift_assignments!.assigned_to_name}
+            <div className="flex items-center gap-1.5">
+              <span className="assigned-badge">
+                <span className="truncate max-w-[80px]">{gift.gift_assignments!.assigned_to_name}</span>
               </span>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-6 px-2 text-xs"
+                className="h-5 px-1.5 text-[10px]"
                 onClick={() => onUnassign(gift.id)}
               >
-                <UserX className="mr-1 h-3 w-3" />
+                <UserX className="mr-0.5 h-2.5 w-2.5" />
                 Liberar
               </Button>
             </div>
           )}
         </div>
 
-        <div className="text-xs text-muted-foreground">
+        <div className="text-[10px] text-muted-foreground">
           Prioridad: {gift.priority}
         </div>
       </div>

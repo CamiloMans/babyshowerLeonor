@@ -23,63 +23,63 @@ export function GiftCard({ gift, isSelected, onToggleSelect }: GiftCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.2 }}
       className={cn(
         "gift-card",
         isAssigned && "gift-card-assigned",
-        isSelected && "ring-2 ring-primary ring-offset-2"
+        isSelected && "ring-2 ring-primary ring-offset-1"
       )}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-2">
         {!isAssigned && (
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => onToggleSelect(gift.id)}
-            className="mt-1 h-5 w-5 rounded-md border-2"
+            className="mt-0.5 h-3.5 w-3.5 shrink-0"
           />
         )}
 
         {isAssigned && (
-          <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-md bg-success/20">
-            <Check className="h-3.5 w-3.5 text-success" />
+          <div className="mt-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm bg-success/10">
+            <Check className="h-2.5 w-2.5 text-success" />
           </div>
         )}
 
-        <div className="flex-1 space-y-2">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-serif text-xl font-semibold text-foreground">
+        <div className="flex-1 min-w-0 space-y-1">
+          <div className="flex items-start justify-between gap-1.5">
+            <h3 className="text-xs font-semibold leading-tight text-foreground line-clamp-2">
               {gift.name}
             </h3>
             {gift.price && (
-              <span className="price-tag">{formatPrice(gift.price)}</span>
+              <span className="price-tag shrink-0 text-[10px]">{formatPrice(gift.price)}</span>
             )}
           </div>
 
           {gift.description && (
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-[10px] leading-snug text-muted-foreground line-clamp-1">
               {gift.description}
             </p>
           )}
 
-          <div className="flex items-center gap-3 pt-1">
+          <div className="flex flex-wrap items-center gap-1.5">
             {gift.url && (
               <a
                 href={gift.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                className="inline-flex items-center gap-0.5 text-[10px] font-medium text-primary hover:text-primary/80 transition-colors"
               >
-                <ExternalLink className="h-3.5 w-3.5" />
-                Ver producto
+                <ExternalLink className="h-2.5 w-2.5" />
+                Ver
               </a>
             )}
 
             {isAssigned && (
-              <span className="assigned-badge">
-                <GiftIcon className="h-3.5 w-3.5" />
-                Reservado por {gift.gift_assignments!.assigned_to_name}
+              <span className="assigned-badge text-[10px] px-1.5 py-0.5">
+                <GiftIcon className="h-2.5 w-2.5" />
+                <span className="truncate max-w-[100px]">{gift.gift_assignments!.assigned_to_name}</span>
               </span>
             )}
           </div>

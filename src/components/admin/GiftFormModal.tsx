@@ -98,7 +98,7 @@ export function GiftFormModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-serif text-2xl">
+          <DialogTitle className="text-xl font-semibold">
             {gift ? "Editar Regalo" : "Nuevo Regalo"}
           </DialogTitle>
         </DialogHeader>

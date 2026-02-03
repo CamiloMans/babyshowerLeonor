@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { Lock } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -8,42 +8,37 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 
 interface AdminLoginModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onLogin: (password: string) => boolean;
+  onLoginWithGoogle: () => Promise<boolean>;
 }
 
 export function AdminLoginModal({
   open,
   onOpenChange,
-  onLogin,
+  onLoginWithGoogle,
 }: AdminLoginModalProps) {
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGoogleLogin = async () => {
     setIsLoading(true);
-
-    // Simulate network delay for security
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const success = onLogin(password);
-    setIsLoading(false);
-
-    if (success) {
-      toast.success("Bienvenido al panel de administración");
-      setPassword("");
-      onOpenChange(false);
-    } else {
-      toast.error("Contraseña incorrecta");
-      setPassword("");
+    try {
+      const success = await onLoginWithGoogle();
+      if (success) {
+        toast.success("Redirigiendo a Google...");
+        // The redirect will happen automatically
+      } else {
+        toast.error("Error al iniciar sesión con Google");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Error al iniciar sesión con Google");
+      setIsLoading(false);
     }
   };
 
@@ -51,48 +46,58 @@ export function AdminLoginModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Lock className="h-6 w-6 text-primary" />
+          <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <Lock className="h-5 w-5 text-primary" />
           </div>
-          <DialogTitle className="text-center font-serif text-2xl">
+          <DialogTitle className="text-center text-xl font-semibold">
             Acceso Administrador
           </DialogTitle>
           <DialogDescription className="text-center">
-            Ingresa la contraseña para acceder al panel de administración
+            Inicia sesión con tu cuenta de Google para acceder al panel de administración
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <Label htmlFor="password">Contraseña</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="pr-10"
-                autoFocus
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </button>
+        <div className="space-y-4 pt-4">
+          <Button
+            type="button"
+            className="w-full"
+            disabled={isLoading}
+            onClick={handleGoogleLogin}
+            variant="outline"
+          >
+            <svg
+              className="mr-2 h-4 w-4"
+              aria-hidden="true"
+              focusable="false"
+              data-prefix="fab"
+              data-icon="google"
+              role="img"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 488 512"
+            >
+              <path
+                fill="currentColor"
+                d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 52.6 94.3 256s164.2 203.4 253.5 183.1c41.5-10.3 76.9-33.3 96.8-69.1H248v-85.2h240z"
+              ></path>
+            </svg>
+            {isLoading ? "Cargando..." : "Continuar con Google"}
+          </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <Separator />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Solo administradores autorizados
+              </span>
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Verificando..." : "Entrar"}
-          </Button>
-        </form>
+          <p className="text-center text-xs text-muted-foreground">
+            Si no tienes acceso, contacta al administrador del sistema
+          </p>
+        </div>
       </DialogContent>
     </Dialog>
   );

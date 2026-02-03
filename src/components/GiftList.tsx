@@ -52,10 +52,10 @@ export function GiftList() {
         className="flex min-h-[400px] items-center justify-center"
       >
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-            <Gift className="h-8 w-8 text-muted-foreground" />
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
+            <Gift className="h-6 w-6 text-muted-foreground" />
           </div>
-          <p className="font-serif text-xl text-muted-foreground">
+          <p className="text-base font-medium text-muted-foreground">
             Aún no hay regalos en la lista
           </p>
         </div>
@@ -68,13 +68,13 @@ export function GiftList() {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-8 pb-32">
+      <div className="container mx-auto max-w-7xl px-4 py-4 pb-32 sm:px-6">
         {availableGifts.length > 0 && (
-          <section className="mb-12">
-            <h2 className="mb-6 font-serif text-2xl font-semibold text-foreground">
+          <section className="mb-6">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Disponibles ({availableGifts.length})
             </h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
               {availableGifts.map((gift) => (
                 <GiftCard
                   key={gift.id}
@@ -89,10 +89,10 @@ export function GiftList() {
 
         {assignedGifts.length > 0 && (
           <section>
-            <h2 className="mb-6 font-serif text-2xl font-semibold text-muted-foreground">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Ya reservados ({assignedGifts.length})
             </h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
               {assignedGifts.map((gift) => (
                 <GiftCard
                   key={gift.id}

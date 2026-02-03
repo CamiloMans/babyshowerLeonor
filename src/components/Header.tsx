@@ -6,23 +6,23 @@ import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   isAdmin: boolean;
-  onLogin: (password: string) => boolean;
+  onLoginWithGoogle: () => Promise<boolean>;
   onLogout: () => void;
 }
 
-export function Header({ isAdmin, onLogin, onLogout }: HeaderProps) {
+export function Header({ isAdmin, onLoginWithGoogle, onLogout }: HeaderProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
 
   return (
     <>
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
+      <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex items-center justify-between px-4 py-5 sm:px-6">
           <div>
-            <h1 className="font-serif text-2xl font-bold text-foreground sm:text-3xl">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Lista de Regalos
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="mt-0.5 text-sm text-muted-foreground">
               Selecciona los regalos que quieras reservar
             </p>
           </div>
@@ -65,7 +65,7 @@ export function Header({ isAdmin, onLogin, onLogout }: HeaderProps) {
       <AdminLoginModal
         open={showLoginModal}
         onOpenChange={setShowLoginModal}
-        onLogin={onLogin}
+        onLoginWithGoogle={onLoginWithGoogle}
       />
     </>
   );

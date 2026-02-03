@@ -65,8 +65,8 @@ export function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
+      <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex items-center justify-between px-4 py-5 sm:px-6">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -77,8 +77,8 @@ export function AdminPanel() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="font-serif text-2xl font-bold">Panel de Administración</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-xl font-semibold tracking-tight">Panel de Administración</h1>
+              <p className="mt-0.5 text-sm text-muted-foreground">
                 Gestiona los regalos de la lista
               </p>
             </div>
@@ -91,7 +91,7 @@ export function AdminPanel() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto max-w-7xl px-4 py-4 sm:px-6">
         {!gifts || gifts.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
@@ -99,17 +99,17 @@ export function AdminPanel() {
             className="flex min-h-[300px] items-center justify-center"
           >
             <div className="text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                <Gift className="h-8 w-8 text-muted-foreground" />
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
+                <Gift className="h-6 w-6 text-muted-foreground" />
               </div>
-              <p className="mb-4 font-serif text-xl text-muted-foreground">
+              <p className="mb-4 text-base font-medium text-muted-foreground">
                 No hay regalos aún
               </p>
               <Button onClick={handleCreate}>Crear el primer regalo</Button>
             </div>
           </motion.div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
             {gifts.map((gift) => (
               <AdminGiftCard
                 key={gift.id}
