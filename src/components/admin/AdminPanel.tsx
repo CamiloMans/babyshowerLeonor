@@ -186,6 +186,7 @@ export function AdminPanel() {
         onOpenChange={setIsFormOpen}
         gift={editingGift}
         onSubmit={handleSubmit}
+        onDelete={handleDelete}
         isLoading={createGift.isPending || updateGift.isPending}
       />
     </div>
