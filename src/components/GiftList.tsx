@@ -105,13 +105,13 @@ export function GiftList() {
       <div className="container mx-auto max-w-7xl px-4 py-4 pb-32 sm:px-6">
         {availableGifts.length > 0 && (
           <section className="mb-8">
-            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               Disponibles ({availableGifts.length})
             </h2>
             
             {sortedDestinatarios(Object.keys(groupedAvailable)).map((destinatario) => (
               <div key={destinatario} className="mb-8">
-                <h3 className="mb-4 text-sm font-semibold text-foreground">
+                <h3 className="mb-4 text-lg font-semibold text-foreground">
                   🎀 Regalos para {destinatario}
                 </h3>
                 
@@ -121,10 +121,10 @@ export function GiftList() {
                   );
                   return (
                     <div key={categoria} className="mb-6">
-                      <h4 className="mb-3 text-xs font-medium text-muted-foreground">
+                      <h4 className="mb-3 text-base font-medium text-muted-foreground">
                         {categoria} ({categoriaGifts.length})
                       </h4>
-                      <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                      <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                         {categoriaGifts.map((gift) => (
                           <GiftCard
                             key={gift.id}
@@ -144,13 +144,13 @@ export function GiftList() {
 
         {assignedGifts.length > 0 && (
           <section>
-            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               Ya reservados ({assignedGifts.length})
             </h2>
             
             {sortedDestinatarios(Object.keys(groupedAssigned)).map((destinatario) => (
               <div key={destinatario} className="mb-8">
-                <h3 className="mb-4 text-sm font-semibold text-muted-foreground">
+                <h3 className="mb-4 text-lg font-semibold text-muted-foreground">
                   🎀 Regalos para {destinatario}
                 </h3>
                 
@@ -160,10 +160,10 @@ export function GiftList() {
                   );
                   return (
                     <div key={categoria} className="mb-6">
-                      <h4 className="mb-3 text-xs font-medium text-muted-foreground">
+                      <h4 className="mb-3 text-base font-medium text-muted-foreground">
                         {categoria} ({categoriaGifts.length})
                       </h4>
-                      <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                      <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                         {categoriaGifts.map((gift) => (
                           <GiftCard
                             key={gift.id}

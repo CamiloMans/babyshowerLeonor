@@ -106,10 +106,10 @@ export function AdminGiftCard({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-5 px-1.5 text-[10px] text-destructive hover:text-destructive"
+                      className="h-6 px-2 text-xs text-destructive hover:text-destructive"
                       title="Liberar asignación"
                     >
-                      <X className="h-2.5 w-2.5" />
+                      <X className="h-3 w-3" />
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>

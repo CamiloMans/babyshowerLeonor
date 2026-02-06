@@ -147,7 +147,7 @@ export function AdminPanel() {
 
               return sortedDestinatarios(Object.keys(groupedGifts)).map((destinatario) => (
                 <div key={destinatario} className="mb-8">
-                  <h3 className="mb-4 text-sm font-semibold text-foreground">
+                  <h3 className="mb-4 text-lg font-semibold text-foreground">
                     🎀 Regalos para {destinatario}
                   </h3>
                   
@@ -157,10 +157,10 @@ export function AdminPanel() {
                     );
                     return (
                       <div key={categoria} className="mb-6">
-                        <h4 className="mb-3 text-xs font-medium text-muted-foreground">
+                        <h4 className="mb-3 text-base font-medium text-muted-foreground">
                           {categoria} ({categoriaGifts.length})
                         </h4>
-                        <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                           {categoriaGifts.map((gift) => (
                             <AdminGiftCard
                               key={gift.id}

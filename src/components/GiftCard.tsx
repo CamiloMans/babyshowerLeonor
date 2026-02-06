@@ -60,49 +60,49 @@ export function GiftCard({ gift, isSelected, onToggleSelect }: GiftCardProps) {
         isSelected && "ring-2 ring-primary ring-offset-1"
       )}
     >
-      <div className="flex items-start gap-2">
+      <div className="flex items-start gap-3">
         {!isAssigned && (
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => onToggleSelect(gift.id)}
-            className="mt-0.5 h-3.5 w-3.5 shrink-0"
+            className="mt-0.5 h-4 w-4 shrink-0"
           />
         )}
 
         {isAssigned && (
-          <div className="mt-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm bg-success/10">
-            <Check className="h-2.5 w-2.5 text-success" />
+          <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-sm bg-success/10">
+            <Check className="h-3 w-3 text-success" />
           </div>
         )}
 
-        <div className="flex-1 min-w-0 space-y-1">
-          <div className="flex items-start justify-between gap-1.5">
-            <h3 className="text-xs font-semibold leading-tight text-foreground line-clamp-2">
+        <div className="flex-1 min-w-0 space-y-1.5">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="text-sm font-semibold leading-tight text-foreground line-clamp-2">
               {gift.name}
             </h3>
             {gift.price && (
-              <span className="price-tag shrink-0 text-[10px]">{formatPrice(gift.price)}</span>
+              <span className="price-tag shrink-0">{formatPrice(gift.price)}</span>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             {gift.url && (
               <a
                 href={gift.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-0.5 text-[10px] font-medium text-primary hover:text-primary/80 transition-colors"
+                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
               >
-                <ExternalLink className="h-2.5 w-2.5" />
+                <ExternalLink className="h-3 w-3" />
                 Ver
               </a>
             )}
 
             {isAssigned && (
-              <div className="flex items-center gap-1.5">
-                <span className="assigned-badge text-[10px] px-1.5 py-0.5">
-                  <GiftIcon className="h-2.5 w-2.5" />
-                  <span className="truncate max-w-[100px]">{gift.gift_assignments!.assigned_to_name}</span>
+              <div className="flex items-center gap-2">
+                <span className="assigned-badge">
+                  <GiftIcon className="h-3 w-3" />
+                  <span className="truncate max-w-[120px]">{gift.gift_assignments!.assigned_to_name}</span>
                 </span>
                 {isMyReservation && (
                   <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
@@ -110,10 +110,10 @@ export function GiftCard({ gift, isSelected, onToggleSelect }: GiftCardProps) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-5 px-1.5 text-[10px] text-destructive hover:text-destructive"
+                        className="h-6 px-2 text-xs text-destructive hover:text-destructive"
                         title="Cancelar mi reserva"
                       >
-                        <X className="h-2.5 w-2.5" />
+                        <X className="h-3 w-3" />
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
