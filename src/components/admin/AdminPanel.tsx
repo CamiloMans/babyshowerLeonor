@@ -1,18 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, ArrowLeft, Loader2, Gift } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { GiftFormModal } from "./GiftFormModal";
-import { AdminGiftCard } from "./AdminGiftCard";
+import { SortableGiftCard } from "./SortableGiftCard";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
 import {
   useAdminGifts,
   useCreateGift,
   useUpdateGift,
   useDeleteGift,
   useUnassignGift,
+  useUpdateGiftPriorities,
 } from "@/hooks/useAdminGifts";
 import { GiftWithAssignment, Gift as GiftType } from "@/lib/types";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export function AdminPanel() {
   const navigate = useNavigate();
@@ -21,9 +38,30 @@ export function AdminPanel() {
   const updateGift = useUpdateGift();
   const deleteGift = useDeleteGift();
   const unassignGift = useUnassignGift();
+  const updatePriorities = useUpdateGiftPriorities();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingGift, setEditingGift] = useState<GiftWithAssignment | null>(null);
+  const [localGifts, setLocalGifts] = useState<GiftWithAssignment[]>([]);
+
+  // Sincronizar gifts locales cuando cambian los datos
+  useEffect(() => {
+    if (gifts) {
+      setLocalGifts(gifts);
+    }
+  }, [gifts]);
+
+  // Configurar sensores para drag and drop
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const handleCreate = () => {
     setEditingGift(null);
@@ -53,6 +91,71 @@ export function AdminPanel() {
 
   const handleUnassign = async (giftId: string) => {
     await unassignGift.mutateAsync(giftId);
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    // Encontrar la categoría a la que pertenecen los regalos
+    const activeGift = localGifts.find((g) => g.id === active.id);
+    const overGift = localGifts.find((g) => g.id === over.id);
+
+    if (!activeGift || !overGift) return;
+
+    // Solo permitir reordenar dentro de la misma categoría
+    if (
+      activeGift.destinatario !== overGift.destinatario ||
+      activeGift.categoria_regalos !== overGift.categoria_regalos
+    ) {
+      toast.error("Solo puedes reordenar regalos dentro de la misma categoría");
+      return;
+    }
+
+    // Obtener todos los regalos de la misma categoría
+    const categoriaGifts = localGifts.filter(
+      (g) =>
+        g.destinatario === activeGift.destinatario &&
+        g.categoria_regalos === activeGift.categoria_regalos
+    );
+
+    const oldIndex = categoriaGifts.findIndex((g) => g.id === active.id);
+    const newIndex = categoriaGifts.findIndex((g) => g.id === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    // Reordenar localmente
+    const reordered = arrayMove(categoriaGifts, oldIndex, newIndex);
+
+    // Actualizar prioridades basadas en el nuevo orden
+    const updates = reordered.map((gift, index) => ({
+      id: gift.id,
+      priority: index,
+    }));
+
+    // Actualizar todos los regalos de la categoría con nuevas prioridades
+    const allGifts = [...localGifts];
+    reordered.forEach((gift, index) => {
+      const giftIndex = allGifts.findIndex((g) => g.id === gift.id);
+      if (giftIndex !== -1) {
+        allGifts[giftIndex] = { ...allGifts[giftIndex], priority: index };
+      }
+    });
+
+    setLocalGifts(allGifts);
+
+    // Actualizar en la base de datos
+    try {
+      await updatePriorities.mutateAsync(updates);
+      toast.success("Orden actualizado");
+    } catch (error) {
+      // Revertir cambios locales en caso de error
+      setLocalGifts(gifts || []);
+      toast.error("Error al actualizar el orden");
+    }
   };
 
   if (isLoading) {
@@ -113,8 +216,8 @@ export function AdminPanel() {
             {/* Agrupar regalos por destinatario y categoría */}
             {(() => {
               // Función para agrupar regalos
-              const groupGiftsByCategory = (giftsList: typeof gifts) => {
-                const grouped: Record<string, Record<string, typeof gifts>> = {};
+              const groupGiftsByCategory = (giftsList: GiftWithAssignment[]) => {
+                const grouped: Record<string, Record<string, GiftWithAssignment[]>> = {};
                 
                 giftsList.forEach((gift) => {
                   const destinatario = gift.destinatario || "Sin categoría";
@@ -143,7 +246,8 @@ export function AdminPanel() {
                 });
               };
 
-              const groupedGifts = groupGiftsByCategory(gifts);
+              const giftsToUse = localGifts.length > 0 ? localGifts : (gifts || []);
+              const groupedGifts = groupGiftsByCategory(giftsToUse);
 
               return sortedDestinatarios(Object.keys(groupedGifts)).map((destinatario) => (
                 <div key={destinatario} className="mb-8">
@@ -152,25 +256,43 @@ export function AdminPanel() {
                   </h3>
                   
                   {Object.keys(groupedGifts[destinatario]).sort().map((categoria) => {
-                    const categoriaGifts = groupedGifts[destinatario][categoria].sort((a, b) => 
-                      a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
-                    );
+                    // Ordenar por priority primero, luego alfabéticamente
+                    const categoriaGifts = groupedGifts[destinatario][categoria].sort((a, b) => {
+                      if (a.priority !== b.priority) {
+                        return a.priority - b.priority;
+                      }
+                      return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' });
+                    });
+                    
+                    const giftIds = categoriaGifts.map((g) => g.id);
+                    
                     return (
                       <div key={categoria} className="mb-6">
                         <h4 className="mb-3 text-base font-medium text-muted-foreground">
                           {categoria} ({categoriaGifts.length})
                         </h4>
-                        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-                          {categoriaGifts.map((gift) => (
-                            <AdminGiftCard
-                              key={gift.id}
-                              gift={gift}
-                              onEdit={handleEdit}
-                              onDelete={handleDelete}
-                              onUnassign={handleUnassign}
-                            />
-                          ))}
-                        </div>
+                        <DndContext
+                          sensors={sensors}
+                          collisionDetection={closestCenter}
+                          onDragEnd={handleDragEnd}
+                        >
+                          <SortableContext
+                            items={giftIds}
+                            strategy={rectSortingStrategy}
+                          >
+                            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                              {categoriaGifts.map((gift) => (
+                                <SortableGiftCard
+                                  key={gift.id}
+                                  gift={gift}
+                                  onEdit={handleEdit}
+                                  onDelete={handleDelete}
+                                  onUnassign={handleUnassign}
+                                />
+                              ))}
+                            </div>
+                          </SortableContext>
+                        </DndContext>
                       </div>
                     );
                   })}

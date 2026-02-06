@@ -122,3 +122,33 @@ export function useUnassignGift() {
     },
   });
 }
+
+export function useUpdateGiftPriorities() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (updates: Array<{ id: string; priority: number }>) => {
+      // Actualizar todas las prioridades en paralelo
+      const promises = updates.map(({ id, priority }) =>
+        supabase
+          .from("gifts")
+          .update({ priority })
+          .eq("id", id)
+      );
+
+      const results = await Promise.all(promises);
+      const errors = results.filter((r) => r.error).map((r) => r.error);
+
+      if (errors.length > 0) {
+        throw new Error("Error al actualizar las prioridades");
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-gifts"] });
+      queryClient.invalidateQueries({ queryKey: ["gifts"] });
+    },
+    onError: () => {
+      toast.error("Error al actualizar el orden");
+    },
+  });
+}
