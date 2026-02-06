@@ -91,7 +91,7 @@ export function AdminPanel() {
         </div>
       </header>
 
-      <main className="container mx-auto max-w-7xl px-4 py-4 sm:px-6">
+      <main className="container mx-auto max-w-7xl px-4 py-4 pb-32 sm:px-6">
         {!gifts || gifts.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
@@ -109,16 +109,74 @@ export function AdminPanel() {
             </div>
           </motion.div>
         ) : (
-          <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-            {gifts.map((gift) => (
-              <AdminGiftCard
-                key={gift.id}
-                gift={gift}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onUnassign={handleUnassign}
-              />
-            ))}
+          <div>
+            {/* Agrupar regalos por destinatario y categoría */}
+            {(() => {
+              // Función para agrupar regalos
+              const groupGiftsByCategory = (giftsList: typeof gifts) => {
+                const grouped: Record<string, Record<string, typeof gifts>> = {};
+                
+                giftsList.forEach((gift) => {
+                  const destinatario = gift.destinatario || "Sin categoría";
+                  const categoria = gift.categoria_regalos || "Sin categoría";
+                  
+                  if (!grouped[destinatario]) {
+                    grouped[destinatario] = {};
+                  }
+                  if (!grouped[destinatario][categoria]) {
+                    grouped[destinatario][categoria] = [];
+                  }
+                  grouped[destinatario][categoria].push(gift);
+                });
+                
+                return grouped;
+              };
+
+              // Ordenar destinatarios: Leonor primero, luego Padres
+              const sortedDestinatarios = (destinatarios: string[]) => {
+                return destinatarios.sort((a, b) => {
+                  if (a === "Leonor") return -1;
+                  if (b === "Leonor") return 1;
+                  if (a === "Padres") return -1;
+                  if (b === "Padres") return 1;
+                  return a.localeCompare(b);
+                });
+              };
+
+              const groupedGifts = groupGiftsByCategory(gifts);
+
+              return sortedDestinatarios(Object.keys(groupedGifts)).map((destinatario) => (
+                <div key={destinatario} className="mb-8">
+                  <h3 className="mb-4 text-sm font-semibold text-foreground">
+                    🎀 Regalos para {destinatario}
+                  </h3>
+                  
+                  {Object.keys(groupedGifts[destinatario]).sort().map((categoria) => {
+                    const categoriaGifts = groupedGifts[destinatario][categoria].sort((a, b) => 
+                      a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
+                    );
+                    return (
+                      <div key={categoria} className="mb-6">
+                        <h4 className="mb-3 text-xs font-medium text-muted-foreground">
+                          {categoria} ({categoriaGifts.length})
+                        </h4>
+                        <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                          {categoriaGifts.map((gift) => (
+                            <AdminGiftCard
+                              key={gift.id}
+                              gift={gift}
+                              onEdit={handleEdit}
+                              onDelete={handleDelete}
+                              onUnassign={handleUnassign}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ));
+            })()}
           </div>
         )}
       </main>

@@ -1,105 +1,53 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import type { User } from "@supabase/supabase-js";
+
+// Simple client-side admin session with password
+const ADMIN_SESSION_KEY = "gift_registry_admin";
+const ADMIN_PASSWORD = "admin123";
+const SESSION_DURATION = 60 * 60 * 1000; // 1 hour
 
 export function useAdminSession() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
-
-  const checkAdminStatus = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("admins")
-        .select("id")
-        .eq("id", userId)
-        .eq("is_active", true)
-        .single();
-
-      if (error && error.code !== "PGRST116") {
-        // PGRST116 is "no rows returned", which is fine
-        console.error("Error checking admin status:", error);
-        return false;
-      }
-
-      return !!data;
-    } catch (error) {
-      console.error("Error checking admin status:", error);
-      return false;
-    }
-  }, []);
 
   useEffect(() => {
-    // Check initial session
-    const initSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.user) {
-        setUser(session.user);
-        const adminStatus = await checkAdminStatus(session.user.id);
-        setIsAdmin(adminStatus);
-      } else {
-        setUser(null);
-        setIsAdmin(false);
-      }
-      
-      setIsLoading(false);
-    };
-
-    initSession();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          setUser(session.user);
-          const adminStatus = await checkAdminStatus(session.user.id);
-          setIsAdmin(adminStatus);
+    const stored = localStorage.getItem(ADMIN_SESSION_KEY);
+    if (stored) {
+      try {
+        const session = JSON.parse(stored);
+        if (session.isAdmin && session.expiresAt > Date.now()) {
+          setIsAdmin(true);
         } else {
-          setUser(null);
-          setIsAdmin(false);
+          localStorage.removeItem(ADMIN_SESSION_KEY);
         }
-        setIsLoading(false);
+      } catch {
+        localStorage.removeItem(ADMIN_SESSION_KEY);
       }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [checkAdminStatus]);
-
-  const loginWithGoogle = useCallback(async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/`,
-        },
-      });
-
-      if (error) {
-        console.error("Error signing in with Google:", error);
-        return false;
-      }
-
-      return true;
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-      return false;
     }
+    setIsLoading(false);
   }, []);
 
-  const logout = useCallback(async () => {
-    await supabase.auth.signOut();
-    setUser(null);
+  const login = useCallback((password: string): boolean => {
+    if (password === ADMIN_PASSWORD) {
+      const session = {
+        isAdmin: true,
+        expiresAt: Date.now() + SESSION_DURATION,
+      };
+      localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(session));
+      setIsAdmin(true);
+      return true;
+    }
+    return false;
+  }, []);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem(ADMIN_SESSION_KEY);
     setIsAdmin(false);
   }, []);
 
   return { 
     isAdmin, 
     isLoading, 
-    user,
-    loginWithGoogle, 
+    login, 
     logout 
   };
 }

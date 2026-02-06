@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AdminRoute } from "./components/admin/AdminRoute";
 
 const queryClient = new QueryClient();
@@ -17,13 +18,22 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin"
             element={
-              <AdminRoute>
-                <Admin />
-              </AdminRoute>
+              <ProtectedRoute>
+                <AdminRoute>
+                  <Admin />
+                </AdminRoute>
+              </ProtectedRoute>
             }
           />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

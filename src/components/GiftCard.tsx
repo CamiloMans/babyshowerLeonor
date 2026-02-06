@@ -1,7 +1,22 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Check, Gift as GiftIcon } from "lucide-react";
+import { ExternalLink, Check, Gift as GiftIcon, X } from "lucide-react";
 import { GiftWithAssignment } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { useCancelGift } from "@/hooks/useCancelGift";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 
 interface GiftCardProps {
@@ -12,6 +27,19 @@ interface GiftCardProps {
 
 export function GiftCard({ gift, isSelected, onToggleSelect }: GiftCardProps) {
   const isAssigned = !!gift.gift_assignments;
+  const { user } = useAuth();
+  const cancelGift = useCancelGift();
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  
+  // Verificar si el usuario actual es el que reservó este regalo
+  const isMyReservation = isAssigned && 
+    user && 
+    gift.gift_assignments?.assigned_to_user_id === user.id;
+
+  const handleCancel = async () => {
+    await cancelGift.mutateAsync(gift.id);
+    setCancelDialogOpen(false);
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-CL", {
@@ -57,12 +85,6 @@ export function GiftCard({ gift, isSelected, onToggleSelect }: GiftCardProps) {
             )}
           </div>
 
-          {gift.description && (
-            <p className="text-[10px] leading-snug text-muted-foreground line-clamp-1">
-              {gift.description}
-            </p>
-          )}
-
           <div className="flex flex-wrap items-center gap-1.5">
             {gift.url && (
               <a
@@ -77,10 +99,45 @@ export function GiftCard({ gift, isSelected, onToggleSelect }: GiftCardProps) {
             )}
 
             {isAssigned && (
-              <span className="assigned-badge text-[10px] px-1.5 py-0.5">
-                <GiftIcon className="h-2.5 w-2.5" />
-                <span className="truncate max-w-[100px]">{gift.gift_assignments!.assigned_to_name}</span>
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="assigned-badge text-[10px] px-1.5 py-0.5">
+                  <GiftIcon className="h-2.5 w-2.5" />
+                  <span className="truncate max-w-[100px]">{gift.gift_assignments!.assigned_to_name}</span>
+                </span>
+                {isMyReservation && (
+                  <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-5 px-1.5 text-[10px] text-destructive hover:text-destructive"
+                        title="Cancelar mi reserva"
+                      >
+                        <X className="h-2.5 w-2.5" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>¿Cancelar reserva?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          ¿Estás seguro de que quieres cancelar tu reserva de <strong>"{gift.name}"</strong>? 
+                          El regalo estará disponible nuevamente para que otros lo reserven.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Mantener reserva</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleCancel}
+                          disabled={cancelGift.isPending}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          {cancelGift.isPending ? "Cancelando..." : "Cancelar reserva"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </div>
             )}
           </div>
         </div>

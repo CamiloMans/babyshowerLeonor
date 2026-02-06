@@ -21,10 +21,11 @@ Esta guía te ayudará a configurar la autenticación con Google OAuth en tu apl
    - **Authorized JavaScript origins**: 
      - `http://localhost:5173` (desarrollo)
      - `https://tu-dominio.com` (producción)
-   - **Authorized redirect URIs**:
-     - `http://localhost:5173/auth/v1/callback` (desarrollo)
-     - `https://tu-proyecto.supabase.co/auth/v1/callback` (producción - usa tu URL de Supabase)
-     - `https://tu-dominio.com/auth/v1/callback` (producción)
+     - `https://tu-proyecto.supabase.co` (URL de tu proyecto Supabase - IMPORTANTE)
+   - **Authorized redirect URIs** (MUY IMPORTANTE - debe coincidir exactamente):
+     - `https://tu-proyecto.supabase.co/auth/v1/callback` (REEMPLAZA "tu-proyecto" con tu ID de proyecto)
+     - Ejemplo: `https://frylgceemznlsqltjuno.supabase.co/auth/v1/callback`
+     - Para desarrollo local (opcional): `http://localhost:5173/auth/v1/callback`
 
 7. Copia el **Client ID** y **Client Secret**
 

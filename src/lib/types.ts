@@ -6,6 +6,8 @@ export interface Gift {
   price: number | null;
   priority: number;
   is_active: boolean;
+  destinatario: string | null;
+  categoria_regalos: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -14,6 +16,7 @@ export interface GiftAssignment {
   id: string;
   gift_id: string;
   assigned_to_name: string;
+  assigned_to_user_id: string | null;
   assigned_at: string;
   created_at: string;
   updated_at: string;

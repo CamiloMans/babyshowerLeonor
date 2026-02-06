@@ -21,6 +21,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Gift } from "@/lib/types";
 
 const giftSchema = z.object({
@@ -30,6 +37,8 @@ const giftSchema = z.object({
   price: z.coerce.number().min(0, "El precio debe ser positivo").optional(),
   priority: z.coerce.number().int().default(0),
   is_active: z.boolean().default(true),
+  destinatario: z.string().min(1, "El destinatario es requerido"),
+  categoria_regalos: z.string().min(1, "La categoría es requerida"),
 });
 
 type GiftFormData = z.infer<typeof giftSchema>;
@@ -58,6 +67,8 @@ export function GiftFormModal({
       price: undefined,
       priority: 0,
       is_active: true,
+      destinatario: "Leonor",
+      categoria_regalos: "👶 Básicos útiles",
     },
   });
 
@@ -70,6 +81,8 @@ export function GiftFormModal({
         price: gift.price || undefined,
         priority: gift.priority,
         is_active: gift.is_active,
+        destinatario: gift.destinatario || "Leonor",
+        categoria_regalos: gift.categoria_regalos || "👶 Básicos útiles",
       });
     } else {
       form.reset({
@@ -79,6 +92,8 @@ export function GiftFormModal({
         price: undefined,
         priority: 0,
         is_active: true,
+        destinatario: "Leonor",
+        categoria_regalos: "👶 Básicos útiles",
       });
     }
   }, [gift, form]);
@@ -91,7 +106,22 @@ export function GiftFormModal({
       price: data.price || null,
       priority: data.priority,
       is_active: data.is_active,
+      destinatario: data.destinatario,
+      categoria_regalos: data.categoria_regalos,
     });
+  };
+
+  const categoriasPorDestinatario: Record<string, string[]> = {
+    Leonor: [
+      "👶 Básicos útiles",
+      "🧸 Para jugar y estimular",
+      "🛁 Cuidado y baño",
+      "📸 Recuerdos y especiales",
+    ],
+    Padres: [
+      "🍼 Apoyo en la crianza",
+      "🧸 Para hacerles la vida más fácil",
+    ],
   };
 
   return (
@@ -167,6 +197,69 @@ export function GiftFormModal({
                         value={field.value || ""}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="destinatario"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Destinatario *</FormLabel>
+                    <Select 
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        // Actualizar categoría al primer valor disponible para el nuevo destinatario
+                        const nuevasCategorias = categoriasPorDestinatario[value];
+                        if (nuevasCategorias && nuevasCategorias.length > 0) {
+                          form.setValue("categoria_regalos", nuevasCategorias[0]);
+                        }
+                      }} 
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona destinatario" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Leonor">Leonor</SelectItem>
+                        <SelectItem value="Padres">Padres</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="categoria_regalos"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Categoría *</FormLabel>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      disabled={!form.watch("destinatario")}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona categoría" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {form.watch("destinatario") && categoriasPorDestinatario[form.watch("destinatario")]?.map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

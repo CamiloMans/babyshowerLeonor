@@ -40,6 +40,9 @@ export function useAssignGifts() {
       giftIds: string[];
       assignedToName: string;
     }) => {
+      // Obtener el usuario actual
+      const { data: { user } } = await supabase.auth.getUser();
+      
       const results = {
         success: [] as string[],
         failed: [] as string[],
@@ -50,6 +53,7 @@ export function useAssignGifts() {
         const { error } = await supabase.from("gift_assignments").insert({
           gift_id: giftId,
           assigned_to_name: assignedToName.trim(),
+          assigned_to_user_id: user?.id || null,
         });
 
         if (error) {

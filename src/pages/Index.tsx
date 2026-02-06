@@ -3,11 +3,11 @@ import { GiftList } from "@/components/GiftList";
 import { useAdminSession } from "@/hooks/useAdminSession";
 
 const Index = () => {
-  const { isAdmin, loginWithGoogle, logout } = useAdminSession();
+  const { isAdmin } = useAdminSession();
 
   return (
     <div className="min-h-screen bg-background">
-      <Header isAdmin={isAdmin} onLoginWithGoogle={loginWithGoogle} onLogout={logout} />
+      <Header isAdmin={isAdmin} />
       <main>
         <GiftList />
       </main>

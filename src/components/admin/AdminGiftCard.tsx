@@ -1,12 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Edit2,
-  Trash2,
-  ExternalLink,
-  UserX,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import { Edit2, ExternalLink, Gift as GiftIcon, Check, X } from "lucide-react";
 import { GiftWithAssignment } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,10 +26,15 @@ interface AdminGiftCardProps {
 export function AdminGiftCard({
   gift,
   onEdit,
-  onDelete,
   onUnassign,
 }: AdminGiftCardProps) {
   const isAssigned = !!gift.gift_assignments;
+  const [unassignDialogOpen, setUnassignDialogOpen] = useState(false);
+
+  const handleUnassign = () => {
+    onUnassign(gift.id);
+    setUnassignDialogOpen(false);
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-CL", {
@@ -52,112 +51,88 @@ export function AdminGiftCard({
       transition={{ duration: 0.2 }}
       className={cn(
         "gift-card",
-        !gift.is_active && "opacity-50"
+        isAssigned && "gift-card-assigned"
       )}
     >
-      <div className="space-y-1">
-        <div className="flex items-start justify-between gap-1.5">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <h3 className="text-xs font-semibold leading-tight line-clamp-2">{gift.name}</h3>
-              {!gift.is_active && (
-                <span className="inline-flex items-center gap-0.5 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                  <EyeOff className="h-2.5 w-2.5" />
-                  Oculto
-                </span>
-              )}
-            </div>
-            {gift.price && (
-              <span className="mt-0.5 inline-block text-[10px] font-semibold text-foreground">
-                {formatPrice(gift.price)}
-              </span>
-            )}
+      <div className="flex items-start gap-2">
+        {isAssigned && (
+          <div className="mt-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm bg-success/10">
+            <Check className="h-2.5 w-2.5 text-success" />
           </div>
-
-          <div className="flex items-center gap-0.5 shrink-0">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onEdit(gift)}
-              title="Editar"
-              className="h-6 w-6"
-            >
-              <Edit2 className="h-3 w-3" />
-            </Button>
-
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 text-destructive hover:text-destructive"
-                  title="Eliminar"
-                  disabled={isAssigned}
-                >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>¿Eliminar regalo?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Esta acción no se puede deshacer. El regalo "{gift.name}" será
-                    eliminado permanentemente.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => onDelete(gift.id)}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Eliminar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </div>
-
-        {gift.description && (
-          <p className="text-[10px] leading-snug text-muted-foreground line-clamp-1">
-            {gift.description}
-          </p>
         )}
 
-        <div className="flex flex-wrap items-center gap-1.5">
-          {gift.url && (
-            <a
-              href={gift.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-0.5 text-[10px] font-medium text-primary hover:text-primary/80 transition-colors"
-            >
-              <ExternalLink className="h-2.5 w-2.5" />
-              Ver
-            </a>
-          )}
-
-          {isAssigned && (
-            <div className="flex items-center gap-1.5">
-              <span className="assigned-badge">
-                <span className="truncate max-w-[80px]">{gift.gift_assignments!.assigned_to_name}</span>
-              </span>
+        <div className="flex-1 min-w-0 space-y-1">
+          <div className="flex items-start justify-between gap-1.5">
+            <h3 className="text-xs font-semibold leading-tight text-foreground line-clamp-2">
+              {gift.name}
+            </h3>
+            <div className="flex items-center gap-0.5 shrink-0">
+              {gift.price && (
+                <span className="price-tag shrink-0 text-[10px]">{formatPrice(gift.price)}</span>
+              )}
               <Button
                 variant="ghost"
-                size="sm"
-                className="h-5 px-1.5 text-[10px]"
-                onClick={() => onUnassign(gift.id)}
+                size="icon"
+                onClick={() => onEdit(gift)}
+                title="Editar"
+                className="h-6 w-6"
               >
-                <UserX className="mr-0.5 h-2.5 w-2.5" />
-                Liberar
+                <Edit2 className="h-3 w-3" />
               </Button>
             </div>
-          )}
-        </div>
+          </div>
 
-        <div className="text-[10px] text-muted-foreground">
-          Prioridad: {gift.priority}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {gift.url && (
+              <a
+                href={gift.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-0.5 text-[10px] font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                <ExternalLink className="h-2.5 w-2.5" />
+                Ver
+              </a>
+            )}
+
+            {isAssigned && (
+              <div className="flex items-center gap-1.5">
+                <span className="assigned-badge text-[10px] px-1.5 py-0.5">
+                  <GiftIcon className="h-2.5 w-2.5" />
+                  <span className="truncate max-w-[100px]">{gift.gift_assignments!.assigned_to_name}</span>
+                </span>
+                <AlertDialog open={unassignDialogOpen} onOpenChange={setUnassignDialogOpen}>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-5 px-1.5 text-[10px] text-destructive hover:text-destructive"
+                      title="Liberar asignación"
+                    >
+                      <X className="h-2.5 w-2.5" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>¿Liberar asignación?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        El regalo <strong>"{gift.name}"</strong> será liberado de <strong>"{gift.gift_assignments!.assigned_to_name}"</strong> y estará disponible nuevamente para ser reservado.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleUnassign}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Liberar asignación
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
