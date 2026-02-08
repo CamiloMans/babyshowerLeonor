@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, ArrowLeft, Loader2, Gift, Baby, Gamepad2, Bath, Camera, Droplet, Heart } from "lucide-react";
+import { Plus, ArrowLeft, Loader2, Gift, Baby, Gamepad2, Bath, Camera, Droplet, Heart, Settings2, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { GiftFormModal } from "./GiftFormModal";
@@ -203,17 +203,48 @@ export function AdminPanel() {
             >
               <ArrowLeft className="h-5 w-5" strokeWidth={2} />
             </Button>
-            <div>
-              <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Panel de Administración</h1>
-              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                Gestiona los regalos de la lista
-              </p>
+            
+            {/* Decorative icon */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="hidden sm:flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 via-primary/15 to-accent/20 shadow-md backdrop-blur-sm border border-primary/20"
+            >
+              <Settings2 className="h-6 w-6 text-primary" strokeWidth={2.5} />
+            </motion.div>
+            
+            <div className="space-y-1">
+              <div className="flex items-center gap-2.5">
+                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Panel de Administración
+                </h1>
+                <motion.div
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+                  className="hidden sm:block"
+                >
+                  <Sparkles className="h-5 w-5 text-primary/60" strokeWidth={2} />
+                </motion.div>
+              </div>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Gestiona los regalos de la lista
+                </p>
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                  className="hidden sm:block"
+                >
+                  <Gift className="h-3.5 w-3.5 text-accent/50" strokeWidth={2} />
+                </motion.div>
+              </div>
             </div>
           </div>
 
           <Button
             onClick={handleCreate}
-            className="gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+            className="gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transform hover:scale-[1.02] active:scale-[0.98]"
           >
             <Plus className="h-4 w-4" strokeWidth={2} />
             <span className="hidden sm:inline">Nuevo Regalo</span>
