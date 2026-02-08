@@ -73,21 +73,8 @@ export function SelectionBar({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="selection-bar relative"
+          className="selection-bar"
         >
-          {/* Botón de limpiar en móvil - esquina superior derecha */}
-          <div className="absolute top-3 right-4 sm:hidden z-10">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={onClearSelection}
-              className="rounded-full h-10 w-10 shadow-md bg-background/95 backdrop-blur-sm border border-border/60 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
-            >
-              <X className="h-5 w-5" strokeWidth={2.5} />
-            </Button>
-          </div>
-          
           <div className="container mx-auto px-4 py-5 sm:px-6">
             <form
               onSubmit={handleSubmit}
@@ -97,7 +84,7 @@ export function SelectionBar({
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                className="flex items-center gap-3"
+                className="flex items-center gap-3 w-full sm:w-auto"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
                   <Gift className="h-5 w-5 text-primary" strokeWidth={2} />
@@ -108,6 +95,15 @@ export function SelectionBar({
                     seleccionado{totalSelected > 1 ? "s" : ""}
                   </p>
                 </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="sm:hidden ml-auto rounded-xl hover:bg-primary/10 hover:text-primary"
+                  onClick={onClearSelection}
+                >
+                  <X className="h-4 w-4" strokeWidth={2.5} />
+                </Button>
               </motion.div>
 
               <motion.div

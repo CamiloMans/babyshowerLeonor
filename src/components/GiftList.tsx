@@ -297,13 +297,19 @@ export function GiftList({ onSelectionChange }: GiftListProps) {
               onClick={handleToggleOther}
             >
               <div className="flex items-start gap-3">
-                <Checkbox
-                  checked={isOtherSelected}
-                  onCheckedChange={(checked) => {
-                    setIsOtherSelected(!!checked);
-                  }}
-                  className="mt-0.5 h-5 w-5 shrink-0"
-                />
+                <div 
+                  className="flex-shrink-0 pt-0.5 relative z-10"
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  <Checkbox
+                    checked={isOtherSelected}
+                    onCheckedChange={(checked) => {
+                      setIsOtherSelected(!!checked);
+                    }}
+                    className="h-5 w-5 cursor-pointer"
+                  />
+                </div>
                 <div className="flex-1 min-w-0 space-y-1.5">
                   <h3 className="text-sm font-semibold leading-tight text-foreground">
                     Otro regalo

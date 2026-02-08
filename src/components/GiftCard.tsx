@@ -70,16 +70,28 @@ export function GiftCard({ gift, isSelected, onToggleSelect, onCancel }: GiftCar
       className={cn(
         "gift-card",
         isFullyAssigned && "gift-card-assigned",
-        isSelected && "ring-2 ring-primary ring-offset-2 shadow-lg bg-primary/10 border-primary/50"
+        isSelected && "ring-2 ring-primary ring-offset-2 shadow-lg bg-primary/10 border-primary/50",
+        isAvailable && "cursor-pointer"
       )}
+      onClick={() => {
+        if (isAvailable) {
+          onToggleSelect(gift.id);
+        }
+      }}
     >
       <div className="flex items-start gap-3">
         {isAvailable && (
-          <Checkbox
-            checked={isSelected}
-            onCheckedChange={() => onToggleSelect(gift.id)}
-            className="mt-0.5 h-5 w-5 shrink-0"
-          />
+          <div
+            className="mt-0.5 shrink-0 relative z-10"
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <Checkbox
+              checked={isSelected}
+              onCheckedChange={() => onToggleSelect(gift.id)}
+              className="h-5 w-5 cursor-pointer"
+            />
+          </div>
         )}
 
         {isFullyAssigned && (
@@ -172,7 +184,10 @@ export function GiftCard({ gift, isSelected, onToggleSelect, onCancel }: GiftCar
                 </Dialog>
                 
                 <button
-                  onClick={() => setAssignmentsDialogOpen(true)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setAssignmentsDialogOpen(true);
+                  }}
                   className="assigned-badge cursor-pointer hover:bg-success/20 transition-colors"
                 >
                   <Gift className="h-3.5 w-3.5" strokeWidth={2} />
@@ -191,6 +206,7 @@ export function GiftCard({ gift, isSelected, onToggleSelect, onCancel }: GiftCar
                         size="sm"
                         className="h-6 px-2 text-xs text-destructive hover:text-destructive"
                         title="Cancelar mi reserva"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                       </Button>
