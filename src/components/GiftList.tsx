@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Gift, Loader2, Baby, Gamepad2, Bath, Camera, Droplet, Heart } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
@@ -23,7 +23,11 @@ const removeEmoji = (text: string) => {
   return text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
 };
 
-export function GiftList() {
+interface GiftListProps {
+  onSelectionChange?: (count: number, clearSelection: () => void) => void;
+}
+
+export function GiftList({ onSelectionChange }: GiftListProps) {
   const { data: gifts, isLoading, error } = useGifts();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isOtherSelected, setIsOtherSelected] = useState(false);
@@ -47,7 +51,18 @@ export function GiftList() {
 
   const handleClearSelection = () => {
     setSelectedIds(new Set());
+    setIsOtherSelected(false);
   };
+
+  // Notificar cambios en la selección al componente padre
+  const totalSelected = selectedIds.size + (isOtherSelected ? 1 : 0);
+  
+  // Usar useEffect para notificar cambios
+  useEffect(() => {
+    if (onSelectionChange) {
+      onSelectionChange(totalSelected, handleClearSelection);
+    }
+  }, [totalSelected, onSelectionChange]);
 
   const handleGiftCancel = (giftId: string) => {
     // Agregar el regalo cancelado a la lista para que no aparezca como disponible
@@ -287,7 +302,7 @@ export function GiftList() {
                   onCheckedChange={(checked) => {
                     setIsOtherSelected(!!checked);
                   }}
-                  className="mt-0.5 h-4 w-4 shrink-0"
+                  className="mt-0.5 h-5 w-5 shrink-0"
                 />
                 <div className="flex-1 min-w-0 space-y-1.5">
                   <h3 className="text-sm font-semibold leading-tight text-foreground">
@@ -386,10 +401,7 @@ export function GiftList() {
         selectedCount={selectedIds.size}
         selectedIds={Array.from(selectedIds)}
         isOtherSelected={isOtherSelected}
-        onClearSelection={() => {
-          setSelectedIds(new Set());
-          setIsOtherSelected(false);
-        }}
+        onClearSelection={handleClearSelection}
       />
     </>
   );

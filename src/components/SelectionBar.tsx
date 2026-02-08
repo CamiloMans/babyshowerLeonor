@@ -136,7 +136,7 @@ export function SelectionBar({
                   variant="ghost"
                   size="icon"
                   onClick={onClearSelection}
-                  className="rounded-xl hover:bg-destructive/10 hover:text-destructive"
+                  className="hidden sm:flex rounded-xl hover:bg-destructive/10 hover:text-destructive"
                 >
                   <X className="h-4 w-4" strokeWidth={2.5} />
                 </Button>

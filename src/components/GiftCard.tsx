@@ -78,13 +78,13 @@ export function GiftCard({ gift, isSelected, onToggleSelect, onCancel }: GiftCar
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => onToggleSelect(gift.id)}
-            className="mt-0.5 h-4 w-4 shrink-0"
+            className="mt-0.5 h-5 w-5 shrink-0"
           />
         )}
 
         {isFullyAssigned && (
-          <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-sm bg-success/10">
-            <CheckCircle className="h-3.5 w-3.5 text-success" strokeWidth={2.5} />
+          <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/10">
+            <CheckCircle className="h-4 w-4 text-success" strokeWidth={2.5} />
           </div>
         )}
 

@@ -162,7 +162,10 @@ export function GiftFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent 
+        className="sm:max-w-lg"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
             {gift ? "Editar Regalo" : "Nuevo Regalo"}
@@ -178,7 +181,7 @@ export function GiftFormModal({
                 <FormItem>
                   <FormLabel>Nombre *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: Cafetera" {...field} />
+                    <Input placeholder="Ej: Cafetera" {...field} autoFocus={false} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -192,7 +195,7 @@ export function GiftFormModal({
                   <FormItem>
                     <FormLabel>URL del producto</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://..." {...field} />
+                      <Input placeholder="https://..." {...field} autoFocus={false} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -239,6 +242,7 @@ export function GiftFormModal({
                           type="number"
                           placeholder="1"
                           {...field}
+                          autoFocus={false}
                           value={field.value === "" || field.value === null || field.value === undefined ? "" : field.value}
                           onChange={(e) => {
                             const value = e.target.value;
