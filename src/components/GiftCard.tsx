@@ -53,11 +53,12 @@ export function GiftCard({ gift, isSelected, onToggleSelect }: GiftCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         "gift-card",
         isAssigned && "gift-card-assigned",
-        isSelected && "ring-2 ring-primary ring-offset-1"
+        isSelected && "ring-2 ring-primary ring-offset-2 shadow-lg"
       )}
     >
       <div className="flex items-start gap-3">
@@ -91,10 +92,11 @@ export function GiftCard({ gift, isSelected, onToggleSelect }: GiftCardProps) {
                 href={gift.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 hover:text-primary transition-all duration-200"
+                onClick={(e) => e.stopPropagation()}
               >
-                <ExternalLink className="h-3 w-3" />
-                Ver
+                <ExternalLink className="h-3.5 w-3.5" />
+                <span>Ver</span>
               </a>
             )}
 

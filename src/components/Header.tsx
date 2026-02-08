@@ -47,13 +47,13 @@ export function Header({ isAdmin }: HeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex items-center justify-between px-4 py-5 sm:px-6">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 shadow-sm">
+        <div className="container mx-auto flex items-center justify-between px-4 py-6 sm:px-6">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
               Lista de Regalos
             </h1>
-            <p className="mt-0.5 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
               Selecciona los regalos que quieras reservar
             </p>
           </div>

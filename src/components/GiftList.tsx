@@ -4,10 +4,13 @@ import { Gift, Loader2 } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
 import { GiftCard } from "./GiftCard";
 import { SelectionBar } from "./SelectionBar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 export function GiftList() {
   const { data: gifts, isLoading, error } = useGifts();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
 
   const handleToggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -19,6 +22,10 @@ export function GiftList() {
       }
       return next;
     });
+  };
+
+  const handleToggleOther = () => {
+    setIsOtherSelected((prev) => !prev);
   };
 
   const handleClearSelection = () => {
@@ -102,30 +109,52 @@ export function GiftList() {
 
   return (
     <>
-      <div className="container mx-auto max-w-7xl px-4 py-4 pb-32 sm:px-6">
+      <div className="container mx-auto max-w-7xl px-4 py-8 pb-32 sm:px-6">
         {availableGifts.length > 0 && (
-          <section className="mb-8">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-12"
+          >
+            <motion.h2
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mb-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
               Disponibles ({availableGifts.length})
-            </h2>
+            </motion.h2>
             
-            {sortedDestinatarios(Object.keys(groupedAvailable)).map((destinatario) => (
-              <div key={destinatario} className="mb-8">
-                <h3 className="mb-4 text-lg font-semibold text-foreground">
+            {sortedDestinatarios(Object.keys(groupedAvailable)).map((destinatario, destinatarioIndex) => (
+              <motion.div
+                key={destinatario}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 + destinatarioIndex * 0.1 }}
+                className="mb-10"
+              >
+                <h3 className="mb-6 text-xl font-semibold text-foreground">
                   🎀 Regalos para {destinatario}
                 </h3>
                 
-                {Object.keys(groupedAvailable[destinatario]).sort().map((categoria) => {
+                {Object.keys(groupedAvailable[destinatario]).sort().map((categoria, categoriaIndex) => {
                   const categoriaGifts = groupedAvailable[destinatario][categoria].sort((a, b) => 
                     a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
                   );
                   return (
-                    <div key={categoria} className="mb-6">
-                      <h4 className="mb-3 text-base font-medium text-muted-foreground">
+                    <motion.div
+                      key={categoria}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.4 + categoriaIndex * 0.05 }}
+                      className="mb-8"
+                    >
+                      <h4 className="mb-4 text-base font-medium text-muted-foreground">
                         {categoria} ({categoriaGifts.length})
                       </h4>
-                      <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-                        {categoriaGifts.map((gift) => (
+                      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                        {categoriaGifts.map((gift, giftIndex) => (
                           <GiftCard
                             key={gift.id}
                             gift={gift}
@@ -134,36 +163,103 @@ export function GiftList() {
                           />
                         ))}
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
-              </div>
+              </motion.div>
             ))}
-          </section>
+          </motion.section>
         )}
 
+        {/* Opción "Otro" */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mb-12"
+        >
+          <motion.h2
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mb-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+          >
+            Otras opciones
+          </motion.h2>
+          
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className={cn(
+                "gift-card cursor-pointer",
+                isOtherSelected && "ring-2 ring-primary ring-offset-2 shadow-lg"
+              )}
+              onClick={handleToggleOther}
+            >
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  checked={isOtherSelected}
+                  onCheckedChange={handleToggleOther}
+                  className="mt-0.5 h-4 w-4 shrink-0"
+                />
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  <h3 className="text-sm font-semibold leading-tight text-foreground">
+                    Otro regalo
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Especifica qué regalo quieres dar
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.section>
+
         {assignedGifts.length > 0 && (
-          <section>
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <motion.h2
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="mb-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
               Ya reservados ({assignedGifts.length})
-            </h2>
+            </motion.h2>
             
-            {sortedDestinatarios(Object.keys(groupedAssigned)).map((destinatario) => (
-              <div key={destinatario} className="mb-8">
-                <h3 className="mb-4 text-lg font-semibold text-muted-foreground">
+            {sortedDestinatarios(Object.keys(groupedAssigned)).map((destinatario, destinatarioIndex) => (
+              <motion.div
+                key={destinatario}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 + destinatarioIndex * 0.1 }}
+                className="mb-10"
+              >
+                <h3 className="mb-6 text-xl font-semibold text-muted-foreground">
                   🎀 Regalos para {destinatario}
                 </h3>
                 
-                {Object.keys(groupedAssigned[destinatario]).sort().map((categoria) => {
+                {Object.keys(groupedAssigned[destinatario]).sort().map((categoria, categoriaIndex) => {
                   const categoriaGifts = groupedAssigned[destinatario][categoria].sort((a, b) => 
                     a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
                   );
                   return (
-                    <div key={categoria} className="mb-6">
-                      <h4 className="mb-3 text-base font-medium text-muted-foreground">
+                    <motion.div
+                      key={categoria}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.7 + categoriaIndex * 0.05 }}
+                      className="mb-8"
+                    >
+                      <h4 className="mb-4 text-base font-medium text-muted-foreground">
                         {categoria} ({categoriaGifts.length})
                       </h4>
-                      <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                         {categoriaGifts.map((gift) => (
                           <GiftCard
                             key={gift.id}
@@ -173,19 +269,23 @@ export function GiftList() {
                           />
                         ))}
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
-              </div>
+              </motion.div>
             ))}
-          </section>
+          </motion.section>
         )}
       </div>
 
       <SelectionBar
         selectedCount={selectedIds.size}
         selectedIds={Array.from(selectedIds)}
-        onClearSelection={handleClearSelection}
+        isOtherSelected={isOtherSelected}
+        onClearSelection={() => {
+          setSelectedIds(new Set());
+          setIsOtherSelected(false);
+        }}
       />
     </>
   );

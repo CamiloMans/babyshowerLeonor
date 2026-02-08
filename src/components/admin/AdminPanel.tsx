@@ -167,34 +167,45 @@ export function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex items-center justify-between px-4 py-5 sm:px-6">
+    <div className="min-h-screen bg-background bg-pattern relative overflow-hidden">
+      {/* Decorative gradient overlay */}
+      <div className="fixed inset-0 gradient-overlay pointer-events-none" />
+      
+      {/* Subtle background elements */}
+      <div className="fixed -top-40 -right-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="fixed -bottom-40 -left-40 w-96 h-96 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
+      
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 shadow-sm">
+        <div className="container mx-auto flex items-center justify-between px-4 py-6 sm:px-6">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => navigate("/")}
               title="Volver a la lista"
+              className="rounded-xl hover:bg-primary/10"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">Panel de Administración</h1>
-              <p className="mt-0.5 text-sm text-muted-foreground">
+              <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Panel de Administración</h1>
+              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
                 Gestiona los regalos de la lista
               </p>
             </div>
           </div>
 
-          <Button onClick={handleCreate} className="gap-2">
+          <Button
+            onClick={handleCreate}
+            className="gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+          >
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Nuevo Regalo</span>
           </Button>
         </div>
       </header>
 
-      <main className="container mx-auto max-w-7xl px-4 py-4 pb-32 sm:px-6">
+      <main className="container mx-auto max-w-7xl px-4 py-8 pb-32 sm:px-6 relative z-10">
         {!gifts || gifts.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
@@ -249,13 +260,19 @@ export function AdminPanel() {
               const giftsToUse = localGifts.length > 0 ? localGifts : (gifts || []);
               const groupedGifts = groupGiftsByCategory(giftsToUse);
 
-              return sortedDestinatarios(Object.keys(groupedGifts)).map((destinatario) => (
-                <div key={destinatario} className="mb-8">
-                  <h3 className="mb-4 text-lg font-semibold text-foreground">
+              return sortedDestinatarios(Object.keys(groupedGifts)).map((destinatario, destinatarioIndex) => (
+                <motion.div
+                  key={destinatario}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: destinatarioIndex * 0.1 }}
+                  className="mb-10"
+                >
+                  <h3 className="mb-6 text-xl font-semibold text-foreground">
                     🎀 Regalos para {destinatario}
                   </h3>
                   
-                  {Object.keys(groupedGifts[destinatario]).sort().map((categoria) => {
+                  {Object.keys(groupedGifts[destinatario]).sort().map((categoria, categoriaIndex) => {
                     // Ordenar por priority primero, luego alfabéticamente
                     const categoriaGifts = groupedGifts[destinatario][categoria].sort((a, b) => {
                       if (a.priority !== b.priority) {
@@ -267,8 +284,14 @@ export function AdminPanel() {
                     const giftIds = categoriaGifts.map((g) => g.id);
                     
                     return (
-                      <div key={categoria} className="mb-6">
-                        <h4 className="mb-3 text-base font-medium text-muted-foreground">
+                      <motion.div
+                        key={categoria}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: categoriaIndex * 0.05 }}
+                        className="mb-8"
+                      >
+                        <h4 className="mb-4 text-base font-medium text-muted-foreground">
                           {categoria} ({categoriaGifts.length})
                         </h4>
                         <DndContext
@@ -280,7 +303,7 @@ export function AdminPanel() {
                             items={giftIds}
                             strategy={rectSortingStrategy}
                           >
-                            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                               {categoriaGifts.map((gift) => (
                                 <SortableGiftCard
                                   key={gift.id}
@@ -293,10 +316,10 @@ export function AdminPanel() {
                             </div>
                           </SortableContext>
                         </DndContext>
-                      </div>
+                      </motion.div>
                     );
                   })}
-                </div>
+                </motion.div>
               ));
             })()}
           </div>

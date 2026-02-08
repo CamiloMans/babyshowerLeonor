@@ -18,10 +18,10 @@ Esta guía te ayudará a configurar la autenticación con Google OAuth en tu apl
 6. Crea las credenciales OAuth:
    - Tipo de aplicación: **Web application**
    - Nombre: "Gift Registry Web"
-   - **Authorized JavaScript origins**: 
-     - `http://localhost:5173` (desarrollo)
-     - `https://tu-dominio.com` (producción)
-     - `https://tu-proyecto.supabase.co` (URL de tu proyecto Supabase - IMPORTANTE)
+  - **Authorized JavaScript origins**: 
+    - `http://localhost:5173` (desarrollo)
+    - `https://babyshowerleonor.onrender.com` (producción - Render)
+    - `https://tu-proyecto.supabase.co` (URL de tu proyecto Supabase - IMPORTANTE)
    - **Authorized redirect URIs** (MUY IMPORTANTE - debe coincidir exactamente):
      - `https://tu-proyecto.supabase.co/auth/v1/callback` (REEMPLAZA "tu-proyecto" con tu ID de proyecto)
      - Ejemplo: `https://frylgceemznlsqltjuno.supabase.co/auth/v1/callback`

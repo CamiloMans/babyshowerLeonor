@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Gift } from "lucide-react";
+import { motion } from "framer-motion";
+import { Gift, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -29,32 +30,77 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md space-y-8 text-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-            <Gift className="h-8 w-8 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Lista de Regalos
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Inicia sesión para ver y reservar regalos
-            </p>
-          </div>
-        </div>
+    <div className="flex min-h-screen items-center justify-center bg-background bg-pattern px-4 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-primary/8 blur-3xl" />
+      <div className="absolute -bottom-32 -left-32 w-64 h-64 rounded-full bg-accent/8 blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-primary/3 blur-3xl" />
 
-        <div className="space-y-4">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-md space-y-10 text-center relative z-10"
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex flex-col items-center space-y-6"
+        >
+          <motion.div
+            initial={{ rotate: -10, scale: 0.8 }}
+            animate={{ rotate: 0, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3, type: "spring", stiffness: 200 }}
+            className="relative"
+          >
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 via-primary/15 to-accent/20 shadow-lg backdrop-blur-sm border border-primary/20">
+              <Gift className="h-10 w-10 text-primary" />
+            </div>
+            <motion.div
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+              className="absolute -top-2 -right-2"
+            >
+              <Sparkles className="h-5 w-5 text-accent" />
+            </motion.div>
+          </motion.div>
+          
+          <div className="space-y-3">
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-4xl font-semibold tracking-tight"
+            >
+              Lista de Regalos
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="text-base text-muted-foreground leading-relaxed"
+            >
+              Inicia sesión para ver y reservar regalos
+            </motion.p>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="space-y-5"
+        >
           <Button
             type="button"
-            className="w-full"
+            className="w-full h-12 text-base font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
             disabled={isLoading}
             onClick={handleGoogleLogin}
             size="lg"
           >
             <svg
-              className="mr-2 h-5 w-5"
+              className="mr-3 h-5 w-5"
               aria-hidden="true"
               focusable="false"
               data-prefix="fab"
@@ -71,11 +117,16 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             {isLoading ? "Cargando..." : "Continuar con Google"}
           </Button>
 
-          <p className="text-xs text-muted-foreground">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="text-xs text-muted-foreground leading-relaxed px-4"
+          >
             Al continuar, aceptas nuestros términos de servicio y política de privacidad
-          </p>
-        </div>
-      </div>
+          </motion.p>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

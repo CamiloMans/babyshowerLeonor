@@ -9,16 +9,21 @@ import { toast } from "sonner";
 interface SelectionBarProps {
   selectedCount: number;
   selectedIds: string[];
+  isOtherSelected?: boolean;
   onClearSelection: () => void;
 }
 
 export function SelectionBar({
   selectedCount,
   selectedIds,
+  isOtherSelected = false,
   onClearSelection,
 }: SelectionBarProps) {
   const [name, setName] = useState("");
+  const [otherGiftDescription, setOtherGiftDescription] = useState("");
   const assignGifts = useAssignGifts();
+  
+  const totalSelected = selectedCount + (isOtherSelected ? 1 : 0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,18 +44,30 @@ export function SelectionBar({
       return;
     }
 
+    if (isOtherSelected && !otherGiftDescription.trim()) {
+      toast.error("Por favor especifica qué regalo quieres dar");
+      return;
+    }
+
+    if (isOtherSelected && otherGiftDescription.trim().length < 3) {
+      toast.error("La descripción del regalo debe tener al menos 3 caracteres");
+      return;
+    }
+
     await assignGifts.mutateAsync({
       giftIds: selectedIds,
       assignedToName: trimmedName,
+      otherGiftDescription: isOtherSelected ? otherGiftDescription.trim() : undefined,
     });
 
     setName("");
+    setOtherGiftDescription("");
     onClearSelection();
   };
 
   return (
     <AnimatePresence>
-      {selectedCount > 0 && (
+      {totalSelected > 0 && (
         <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -58,36 +75,58 @@ export function SelectionBar({
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
           className="selection-bar"
         >
-          <div className="container mx-auto px-4 py-4 sm:px-6">
+          <div className="container mx-auto px-4 py-5 sm:px-6">
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col gap-3 sm:flex-row sm:items-center"
+              className="flex flex-col gap-4 sm:flex-row sm:items-center"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                  <Gift className="h-4 w-4 text-primary" />
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                className="flex items-center gap-3"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
+                  <Gift className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-foreground">
-                    {selectedCount} regalo{selectedCount > 1 ? "s" : ""}{" "}
-                    seleccionado{selectedCount > 1 ? "s" : ""}
+                    {totalSelected} regalo{totalSelected > 1 ? "s" : ""}{" "}
+                    seleccionado{totalSelected > 1 ? "s" : ""}
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="flex flex-1 items-center gap-2">
-                <Input
-                  type="text"
-                  placeholder="Tu nombre"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="flex-1 sm:max-w-xs"
-                  maxLength={60}
-                />
+              <motion.div
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center"
+              >
+                <div className="flex flex-1 gap-3">
+                  <Input
+                    type="text"
+                    placeholder="Tu nombre"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="flex-1 sm:max-w-xs rounded-xl border-border/60 focus:border-primary/50"
+                    maxLength={60}
+                  />
+                  {isOtherSelected && (
+                    <Input
+                      type="text"
+                      placeholder="¿Qué regalo quieres dar?"
+                      value={otherGiftDescription}
+                      onChange={(e) => setOtherGiftDescription(e.target.value)}
+                      className="flex-1 sm:max-w-xs rounded-xl border-border/60 focus:border-primary/50"
+                      maxLength={200}
+                    />
+                  )}
+                </div>
                 <Button
                   type="submit"
                   disabled={assignGifts.isPending}
-                  className="gap-2"
+                  className="gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
                 >
                   <Send className="h-4 w-4" />
                   <span className="hidden sm:inline">Reservar</span>
@@ -97,10 +136,11 @@ export function SelectionBar({
                   variant="ghost"
                   size="icon"
                   onClick={onClearSelection}
+                  className="rounded-xl hover:bg-destructive/10 hover:text-destructive"
                 >
                   <X className="h-4 w-4" />
                 </Button>
-              </div>
+              </motion.div>
             </form>
           </div>
         </motion.div>

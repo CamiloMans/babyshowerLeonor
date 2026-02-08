@@ -7,20 +7,39 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check initial session
+    // Check initial session and handle OAuth callback
     const initSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      // Supabase automatically handles the hash fragment and extracts tokens
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error("Error getting session:", error);
+      }
+      
       setUser(session?.user ?? null);
       setIsLoading(false);
+      
+      // Clean up the hash from URL after processing
+      if (window.location.hash && session) {
+        // Remove the hash after Supabase has processed it
+        window.history.replaceState(null, "", window.location.pathname);
+      }
     };
 
     initSession();
 
-    // Listen for auth changes
+    // Listen for auth changes (including OAuth callbacks)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log("Auth state changed:", event, session?.user?.email);
+        
         setUser(session?.user ?? null);
         setIsLoading(false);
+        
+        // Clean up the hash from URL after successful sign in
+        if (event === "SIGNED_IN" && window.location.hash) {
+          window.history.replaceState(null, "", window.location.pathname);
+        }
       }
     );
 
@@ -31,10 +50,19 @@ export function useAuth() {
 
   const loginWithGoogle = useCallback(async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      // Get the current origin (works in both dev and production)
+      const redirectTo = `${window.location.origin}${window.location.pathname}`;
+      
+      console.log("Initiating Google OAuth, redirectTo:", redirectTo);
+      
+      const { error, data } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
 
@@ -43,6 +71,7 @@ export function useAuth() {
         return false;
       }
 
+      // The redirect will happen automatically
       return true;
     } catch (error) {
       console.error("Error signing in with Google:", error);

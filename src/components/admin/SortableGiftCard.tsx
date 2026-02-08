@@ -37,10 +37,10 @@ export function SortableGiftCard({
       <div
         {...attributes}
         {...listeners}
-        className="absolute left-1 top-1 z-10 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-muted"
+        className="absolute left-2 top-2 z-10 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-all duration-200 p-1.5 rounded-lg hover:bg-primary/10 hover:border border-primary/20"
         title="Arrastrar para reordenar"
       >
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
+        <GripVertical className="h-4 w-4 text-primary" />
       </div>
       <AdminGiftCard
         gift={gift}

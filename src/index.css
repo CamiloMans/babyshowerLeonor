@@ -1,115 +1,115 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* 
-  Modern Minimal Design System
-  Clean, professional aesthetic with neutral colors and subtle accents
-  Color palette: Neutral grays, modern blue, subtle greens
+  Editorial Luxury Design System
+  Distinctive, warm aesthetic with editorial typography and refined color palette
+  Color palette: Warm creams, soft roses, golden accents, deep burgundy
 */
 
 @layer base {
   :root {
-    /* Neutral background */
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    /* Warm cream background */
+    --background: 35 25% 98%;
+    --foreground: 340 15% 20%;
 
-    /* Clean card surfaces */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    /* Elegant card surfaces with subtle warmth */
+    --card: 35 30% 99%;
+    --card-foreground: 340 15% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 35 30% 99%;
+    --popover-foreground: 340 15% 20%;
 
-    /* Modern blue - primary accent */
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
+    /* Deep rose - primary accent */
+    --primary: 340 45% 45%;
+    --primary-foreground: 35 25% 98%;
 
-    /* Subtle gray - secondary */
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    /* Soft peach - secondary */
+    --secondary: 25 40% 95%;
+    --secondary-foreground: 340 15% 20%;
 
-    /* Muted gray */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    /* Warm muted tones */
+    --muted: 30 20% 94%;
+    --muted-foreground: 340 10% 40%;
 
-    /* Subtle accent */
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    /* Golden accent */
+    --accent: 45 65% 55%;
+    --accent-foreground: 340 15% 20%;
 
-    /* Modern red for destructive */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    /* Refined burgundy for destructive */
+    --destructive: 350 55% 50%;
+    --destructive-foreground: 35 25% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --border: 30 15% 88%;
+    --input: 30 15% 88%;
+    --ring: 340 45% 45%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    /* Modern green for success */
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
+    /* Soft sage green for success */
+    --success: 150 30% 45%;
+    --success-foreground: 35 25% 98%;
 
-    /* Neutral accent for highlights */
-    --gold: 215 16% 47%;
-    --gold-foreground: 0 0% 100%;
+    /* Golden highlight */
+    --gold: 45 70% 50%;
+    --gold-foreground: 340 15% 20%;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 221 83% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-background: 35 30% 99%;
+    --sidebar-foreground: 340 15% 20%;
+    --sidebar-primary: 340 45% 45%;
+    --sidebar-primary-foreground: 35 25% 98%;
+    --sidebar-accent: 25 40% 95%;
+    --sidebar-accent-foreground: 340 15% 20%;
+    --sidebar-border: 30 15% 88%;
+    --sidebar-ring: 340 45% 45%;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 213 31% 91%;
+    --background: 340 20% 12%;
+    --foreground: 35 25% 95%;
 
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
+    --card: 340 18% 15%;
+    --card-foreground: 35 25% 95%;
 
-    --popover: 224 71% 4%;
-    --popover-foreground: 213 31% 91%;
+    --popover: 340 18% 15%;
+    --popover-foreground: 35 25% 95%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 340 50% 60%;
+    --primary-foreground: 340 20% 12%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 213 31% 91%;
+    --secondary: 340 15% 20%;
+    --secondary-foreground: 35 25% 95%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 340 15% 20%;
+    --muted-foreground: 35 20% 70%;
 
-    --accent: 217 33% 17%;
-    --accent-foreground: 213 31% 91%;
+    --accent: 45 60% 60%;
+    --accent-foreground: 340 20% 12%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 213 31% 91%;
+    --destructive: 350 55% 55%;
+    --destructive-foreground: 35 25% 95%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 217 91% 60%;
+    --border: 340 15% 25%;
+    --input: 340 15% 25%;
+    --ring: 340 50% 60%;
 
-    --success: 142 70% 45%;
-    --success-foreground: 213 31% 91%;
+    --success: 150 35% 50%;
+    --success-foreground: 35 25% 95%;
 
-    --gold: 215 20% 65%;
-    --gold-foreground: 222 47% 11%;
+    --gold: 45 65% 55%;
+    --gold-foreground: 340 20% 12%;
 
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 213 31% 91%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 213 31% 91%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-background: 340 18% 15%;
+    --sidebar-foreground: 35 25% 95%;
+    --sidebar-primary: 340 50% 60%;
+    --sidebar-primary-foreground: 340 20% 12%;
+    --sidebar-accent: 340 15% 20%;
+    --sidebar-accent-foreground: 35 25% 95%;
+    --sidebar-border: 340 15% 25%;
+    --sidebar-ring: 340 50% 60%;
   }
 }
 
@@ -120,45 +120,100 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', sans-serif;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    letter-spacing: -0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-weight: 600;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
   }
 }
 
 @layer components {
+  /* Elegant gift cards with refined styling */
   .gift-card {
-    @apply relative overflow-hidden rounded-md border border-border bg-card p-4 transition-all duration-200;
+    @apply relative overflow-hidden rounded-xl border border-border bg-card p-5 transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.95) 100%);
+    box-shadow: 0 1px 3px hsl(var(--border) / 0.3), 0 1px 2px hsl(var(--border) / 0.2);
+  }
+
+  .gift-card::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none;
+    background: radial-gradient(circle at 50% 0%, hsl(var(--primary) / 0.08) 0%, transparent 70%);
   }
 
   .gift-card:hover {
-    @apply border-primary/20 shadow-sm;
-    transform: translateY(-1px);
+    @apply border-primary/30;
+    box-shadow: 0 8px 24px hsl(var(--primary) / 0.12), 0 4px 8px hsl(var(--border) / 0.3);
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  .gift-card:hover::before {
+    @apply opacity-100;
   }
 
   .gift-card-assigned {
-    @apply opacity-60;
+    @apply opacity-50;
+    background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.8) 100%);
   }
 
+  /* Elegant selection bar with glassmorphism */
   .selection-bar {
-    @apply fixed bottom-0 left-0 right-0 z-50 border-t border-border backdrop-blur-md shadow-lg;
-    background-color: hsl(var(--card) / 0.98);
+    @apply fixed bottom-0 left-0 right-0 z-50 border-t border-border backdrop-blur-xl shadow-2xl;
+    background: linear-gradient(to top, hsl(var(--card) / 0.98) 0%, hsl(var(--card) / 0.95) 100%);
+    box-shadow: 0 -4px 24px hsl(var(--foreground) / 0.08), 0 -2px 8px hsl(var(--border) / 0.3);
   }
 
   .admin-badge {
-    @apply inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary;
+    @apply inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-primary;
+    font-family: 'DM Sans', sans-serif;
+    background-color: hsl(var(--primary) / 0.12);
+    box-shadow: 0 1px 2px hsl(var(--primary) / 0.2);
   }
 
   .assigned-badge {
-    @apply inline-flex items-center gap-1.5 rounded bg-success/10 px-2 py-1 text-xs font-medium text-success;
+    @apply inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-success;
+    font-family: 'DM Sans', sans-serif;
+    background-color: hsl(var(--success) / 0.12);
+    box-shadow: 0 1px 2px hsl(var(--success) / 0.2);
   }
 
   .price-tag {
-    @apply inline-flex items-center rounded bg-muted px-2 py-1 text-xs font-semibold text-foreground;
+    @apply inline-flex items-center rounded-lg bg-gradient-to-br from-accent/20 to-accent/10 px-2.5 py-1 text-xs font-semibold;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: hsl(var(--gold));
+    box-shadow: 0 1px 2px hsl(var(--accent) / 0.2);
+  }
+
+  /* Decorative background patterns */
+  .bg-pattern {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bg-pattern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: 
+      radial-gradient(circle at 2px 2px, hsl(var(--foreground)) 1px, transparent 0);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* Elegant gradient overlays */
+  .gradient-overlay {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.05) 0%,
+      hsl(var(--accent) / 0.03) 50%,
+      hsl(var(--primary) / 0.05) 100%
+    );
   }
 }
