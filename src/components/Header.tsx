@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Lock, LogOut, Settings2 } from "lucide-react";
+import { Lock, LogOut, Settings2, Gift, Baby, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import { AdminLoginModal } from "./AdminLoginModal";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,13 +50,43 @@ export function Header({ isAdmin }: HeaderProps) {
     <>
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 shadow-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-6 sm:px-6">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-              Lista de Regalos
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-              Selecciona los regalos que quieras reservar
-            </p>
+          <div className="flex items-center gap-4">
+            {/* Decorative icon */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="hidden sm:flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 via-primary/15 to-accent/20 shadow-md backdrop-blur-sm border border-primary/20"
+            >
+              <Gift className="h-6 w-6 text-primary" strokeWidth={2.5} />
+            </motion.div>
+            
+            <div className="space-y-1">
+              <div className="flex items-center gap-2.5">
+                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Lista de regalos para Leonor
+                </h1>
+                <motion.div
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+                  className="hidden sm:block"
+                >
+                  <Baby className="h-5 w-5 text-primary/60" strokeWidth={2} />
+                </motion.div>
+              </div>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Selecciona los regalos que quieras reservar
+                </p>
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                  className="hidden sm:block"
+                >
+                  <Heart className="h-3.5 w-3.5 text-accent/50" strokeWidth={2} />
+                </motion.div>
+              </div>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
