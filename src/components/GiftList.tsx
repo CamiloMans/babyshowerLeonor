@@ -292,7 +292,7 @@ export function GiftList({ onSelectionChange }: GiftListProps) {
             <div
               className={cn(
                 "gift-card cursor-pointer",
-                isOtherSelected && "ring-2 ring-primary ring-offset-2 shadow-lg"
+                isOtherSelected && "ring-2 ring-primary ring-offset-2 shadow-lg bg-primary/10 border-primary/50"
               )}
               onClick={handleToggleOther}
             >

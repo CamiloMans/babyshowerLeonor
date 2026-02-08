@@ -70,7 +70,7 @@ export function GiftCard({ gift, isSelected, onToggleSelect, onCancel }: GiftCar
       className={cn(
         "gift-card",
         isFullyAssigned && "gift-card-assigned",
-        isSelected && "ring-2 ring-primary ring-offset-2 shadow-lg"
+        isSelected && "ring-2 ring-primary ring-offset-2 shadow-lg bg-primary/10 border-primary/50"
       )}
     >
       <div className="flex items-start gap-3">
