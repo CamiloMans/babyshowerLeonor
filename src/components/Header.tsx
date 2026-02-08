@@ -176,8 +176,6 @@ export function Header({ isAdmin, selectedCount = 0, onClearSelection }: HeaderP
           </motion.div>
         )}
       </AnimatePresence>
-        </div>
-      </header>
 
       <AdminLoginModal
         open={showLoginModal}
