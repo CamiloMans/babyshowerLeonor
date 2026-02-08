@@ -73,8 +73,21 @@ export function SelectionBar({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="selection-bar"
+          className="selection-bar relative"
         >
+          {/* Botón de limpiar en móvil - esquina superior derecha */}
+          <div className="absolute top-3 right-4 sm:hidden z-10">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={onClearSelection}
+              className="rounded-full h-10 w-10 shadow-md bg-background/95 backdrop-blur-sm border border-border/60 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
+            >
+              <X className="h-5 w-5" strokeWidth={2.5} />
+            </Button>
+          </div>
+          
           <div className="container mx-auto px-4 py-5 sm:px-6">
             <form
               onSubmit={handleSubmit}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Lock, LogOut, Settings2, Gift, Baby, Heart, X } from "lucide-react";
+import { Lock, LogOut, Settings2, Gift, Baby, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdminLoginModal } from "./AdminLoginModal";
@@ -155,27 +155,6 @@ export function Header({ isAdmin, selectedCount = 0, onClearSelection }: HeaderP
         </div>
       </header>
 
-      {/* Botón flotante de limpiar selección en móvil */}
-      <AnimatePresence>
-        {selectedCount > 0 && onClearSelection && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: -20 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="fixed top-20 right-4 z-40 sm:hidden"
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClearSelection}
-              className="rounded-full h-12 w-12 shadow-lg bg-background/95 backdrop-blur-sm border border-border/60 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
-            >
-              <X className="h-5 w-5" strokeWidth={2.5} />
-            </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AdminLoginModal
         open={showLoginModal}
