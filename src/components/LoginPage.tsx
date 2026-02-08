@@ -55,14 +55,14 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             className="relative"
           >
             <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 via-primary/15 to-accent/20 shadow-lg backdrop-blur-sm border border-primary/20">
-              <Gift className="h-10 w-10 text-primary" />
+              <Gift className="h-10 w-10 text-primary" strokeWidth={2} />
             </div>
             <motion.div
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
               className="absolute -top-2 -right-2"
             >
-              <Sparkles className="h-5 w-5 text-accent" />
+              <Sparkles className="h-5 w-5 text-accent" strokeWidth={2} />
             </motion.div>
           </motion.div>
           

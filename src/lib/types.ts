@@ -8,6 +8,7 @@ export interface Gift {
   is_active: boolean;
   destinatario: string | null;
   categoria_regalos: string | null;
+  max_quantity: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -24,6 +25,9 @@ export interface GiftAssignment {
 
 export interface GiftWithAssignment extends Gift {
   gift_assignments: GiftAssignment | null;
+  assignment_count?: number;
+  my_assignment?: GiftAssignment | null;
+  all_assignments?: GiftAssignment[];
 }
 
 export interface AdminSession {

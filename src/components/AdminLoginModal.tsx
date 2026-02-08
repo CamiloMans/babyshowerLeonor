@@ -52,7 +52,7 @@ export function AdminLoginModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-            <Lock className="h-5 w-5 text-primary" />
+            <Lock className="h-5 w-5 text-primary" strokeWidth={2} />
           </div>
           <DialogTitle className="text-center text-xl font-semibold">
             Acceso Administrador
@@ -83,9 +83,9 @@ export function AdminLoginModal({
                 disabled={isLoading}
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
+                  <EyeOff className="h-4 w-4" strokeWidth={2} />
                 ) : (
-                  <Eye className="h-4 w-4" />
+                  <Eye className="h-4 w-4" strokeWidth={2} />
                 )}
               </button>
             </div>

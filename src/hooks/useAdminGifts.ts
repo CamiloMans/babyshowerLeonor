@@ -18,12 +18,20 @@ export function useAdminGifts() {
 
       if (error) throw error;
 
-      return (data || []).map((gift) => ({
+      return (data || []).map((gift) => {
+        const assignments = Array.isArray(gift.gift_assignments) 
+          ? gift.gift_assignments 
+          : gift.gift_assignments 
+            ? [gift.gift_assignments] 
+            : [];
+        
+        return {
         ...gift,
-        gift_assignments: Array.isArray(gift.gift_assignments)
-          ? gift.gift_assignments[0] || null
-          : gift.gift_assignments,
-      }));
+          gift_assignments: assignments.length > 0 ? assignments[0] : null,
+          assignment_count: assignments.length,
+          all_assignments: assignments,
+        };
+      });
     },
   });
 }

@@ -62,7 +62,7 @@ const NotFound = () => {
               size="lg"
               className="rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
             >
-              <Home className="mr-2 h-4 w-4" />
+              <Home className="mr-2 h-4 w-4" strokeWidth={2} />
               Volver al inicio
             </Button>
           </Link>

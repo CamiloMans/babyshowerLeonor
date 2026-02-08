@@ -87,7 +87,7 @@ export function SelectionBar({
                 className="flex items-center gap-3"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
-                  <Gift className="h-5 w-5 text-primary" />
+                  <Gift className="h-5 w-5 text-primary" strokeWidth={2} />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-foreground">
@@ -128,7 +128,7 @@ export function SelectionBar({
                   disabled={assignGifts.isPending}
                   className="gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
                 >
-                  <Send className="h-4 w-4" />
+                  <Send className="h-4 w-4" strokeWidth={2} />
                   <span className="hidden sm:inline">Reservar</span>
                 </Button>
                 <Button
@@ -138,7 +138,7 @@ export function SelectionBar({
                   onClick={onClearSelection}
                   className="rounded-xl hover:bg-destructive/10 hover:text-destructive"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-4 w-4" strokeWidth={2.5} />
                 </Button>
               </motion.div>
             </form>

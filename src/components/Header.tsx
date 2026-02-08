@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Lock, LogOut, Settings } from "lucide-react";
+import { Lock, LogOut, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AdminLoginModal } from "./AdminLoginModal";
 import { useNavigate } from "react-router-dom";
@@ -67,7 +67,7 @@ export function Header({ isAdmin }: HeaderProps) {
                   onClick={() => navigate("/admin")}
                   className="gap-2"
                 >
-                  <Settings className="h-4 w-4" />
+                  <Settings2 className="h-4 w-4" strokeWidth={2} />
                   <span className="hidden sm:inline">Panel Admin</span>
                 </Button>
                 <Button
@@ -76,7 +76,7 @@ export function Header({ isAdmin }: HeaderProps) {
                   onClick={adminLogout}
                   title="Cerrar sesión admin"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <LogOut className="h-4 w-4" strokeWidth={2} />
                 </Button>
               </>
             ) : (
@@ -86,7 +86,7 @@ export function Header({ isAdmin }: HeaderProps) {
                 onClick={() => setShowLoginModal(true)}
                 title="Acceso admin"
               >
-                <Lock className="h-4 w-4" />
+                <Lock className="h-4 w-4" strokeWidth={2} />
               </Button>
             )}
 
@@ -113,7 +113,7 @@ export function Header({ isAdmin }: HeaderProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <LogOut className="mr-2 h-4 w-4" strokeWidth={2} />
                   <span>Cerrar sesión</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

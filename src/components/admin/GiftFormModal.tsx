@@ -18,7 +18,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -45,14 +44,25 @@ const giftSchema = z.object({
   name: z.string().min(1, "El nombre es requerido").max(100, "Máximo 100 caracteres"),
   description: z.string().max(500, "Máximo 500 caracteres").optional(),
   url: z.string().url("URL inválida").optional().or(z.literal("")),
-  price: z.coerce.number().min(0, "El precio debe ser positivo").optional(),
   priority: z.coerce.number().int().default(0),
   is_active: z.boolean().default(true),
   destinatario: z.string().min(1, "El destinatario es requerido"),
   categoria_regalos: z.string().min(1, "La categoría es requerida"),
+  max_quantity: z.preprocess(
+    (val) => {
+      // Si es "infinito" o null, retornar null
+      if (val === "infinito" || val === null || val === "null") return null;
+      if (val === "" || val === undefined) return 1;
+      const num = typeof val === "string" ? parseInt(val, 10) : val;
+      return isNaN(num) || num < 1 ? 1 : num;
+    },
+    z.number().int().min(1, "El límite debe ser al menos 1").nullable()
+  ).default(1),
 });
 
-type GiftFormData = z.infer<typeof giftSchema>;
+type GiftFormData = z.infer<typeof giftSchema> & {
+  hasUnlimitedQuantity?: boolean;
+};
 
 interface GiftFormModalProps {
   open: boolean;
@@ -86,11 +96,12 @@ export function GiftFormModal({
       name: "",
       description: "",
       url: "",
-      price: undefined,
       priority: 0,
       is_active: true,
       destinatario: "Leonor",
       categoria_regalos: "👶 Básicos útiles",
+      max_quantity: 1,
+      hasUnlimitedQuantity: false,
     },
   });
 
@@ -100,22 +111,24 @@ export function GiftFormModal({
         name: gift.name,
         description: gift.description || "",
         url: gift.url || "",
-        price: gift.price || undefined,
         priority: gift.priority,
         is_active: gift.is_active,
         destinatario: gift.destinatario || "Leonor",
         categoria_regalos: gift.categoria_regalos || "👶 Básicos útiles",
+        max_quantity: gift.max_quantity ?? 1,
+        hasUnlimitedQuantity: gift.max_quantity === null,
       });
     } else {
       form.reset({
         name: "",
         description: "",
         url: "",
-        price: undefined,
         priority: 0,
         is_active: true,
         destinatario: "Leonor",
         categoria_regalos: "👶 Básicos útiles",
+        max_quantity: 1,
+        hasUnlimitedQuantity: false,
       });
     }
   }, [gift, form]);
@@ -125,11 +138,12 @@ export function GiftFormModal({
       name: data.name,
       description: data.description || null,
       url: data.url || null,
-      price: data.price || null,
+      price: null,
       priority: data.priority,
       is_active: data.is_active,
       destinatario: data.destinatario,
       categoria_regalos: data.categoria_regalos,
+      max_quantity: data.hasUnlimitedQuantity ? null : (data.max_quantity ?? 1),
     });
   };
 
@@ -171,26 +185,6 @@ export function GiftFormModal({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descripción</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Descripción opcional del regalo"
-                      className="resize-none"
-                      rows={3}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
                 name="url"
@@ -207,23 +201,77 @@ export function GiftFormModal({
 
               <FormField
                 control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Precio (CLP)</FormLabel>
+                name="hasUnlimitedQuantity"
+                render={({ field: unlimitedField }) => (
+                  <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel className="cursor-pointer">Sin límite</FormLabel>
+                      <p className="text-xs text-muted-foreground">
+                        Permitir que este regalo sea reservado ilimitadamente
+                      </p>
+                    </div>
                     <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="29990"
-                        {...field}
-                        value={field.value || ""}
+                      <Switch
+                        checked={unlimitedField.value || false}
+                        onCheckedChange={(checked) => {
+                          unlimitedField.onChange(checked);
+                          if (checked) {
+                            form.setValue("max_quantity", null);
+                          } else {
+                            form.setValue("max_quantity", 1);
+                          }
+                        }}
                       />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
+
+              {!form.watch("hasUnlimitedQuantity") && (
+                <FormField
+                  control={form.control}
+                  name="max_quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Límite de cantidad</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="1"
+                          {...field}
+                          value={field.value === "" || field.value === null || field.value === undefined ? "" : field.value}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            // Permitir borrar (valor vacío)
+                            if (value === "") {
+                              field.onChange("");
+                              return;
+                            }
+                            // Convertir a número y validar
+                            const numValue = parseInt(value, 10);
+                            if (!isNaN(numValue) && numValue > 0) {
+                              field.onChange(numValue);
+                            }
+                          }}
+                          onBlur={(e) => {
+                            // Al salir del campo, si está vacío, 0 o negativo, poner 1
+                            const value = e.target.value;
+                            if (value === "" || value === "0" || parseInt(value, 10) < 1) {
+                              field.onChange(1);
+                            }
+                            field.onBlur();
+                          }}
+                          min={1}
+                        />
+                      </FormControl>
+                      <p className="text-xs text-muted-foreground">
+                        Máximo número de veces que se puede regalar. Por defecto: 1. Puedes borrar el valor para usar el defecto.
+                      </p>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
@@ -313,7 +361,7 @@ export function GiftFormModal({
                       variant="destructive"
                       className="gap-2"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" strokeWidth={2} />
                       Eliminar
                     </Button>
                   </AlertDialogTrigger>

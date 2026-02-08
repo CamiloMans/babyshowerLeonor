@@ -40,7 +40,7 @@ export function SortableGiftCard({
         className="absolute left-2 top-2 z-10 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-all duration-200 p-1.5 rounded-lg hover:bg-primary/10 hover:border border-primary/20"
         title="Arrastrar para reordenar"
       >
-        <GripVertical className="h-4 w-4 text-primary" />
+        <GripVertical className="h-4 w-4 text-primary" strokeWidth={2} />
       </div>
       <AdminGiftCard
         gift={gift}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, ArrowLeft, Loader2, Gift } from "lucide-react";
+import { Plus, ArrowLeft, Loader2, Gift, Baby, Gamepad2, Bath, Camera, Droplet, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { GiftFormModal } from "./GiftFormModal";
@@ -30,6 +30,22 @@ import {
 import { GiftWithAssignment, Gift as GiftType } from "@/lib/types";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+
+// Función para obtener el icono de una categoría
+const getCategoryIcon = (categoria: string) => {
+  if (categoria.includes("Básicos útiles")) return <Baby className="h-5 w-5 inline-block mr-2 text-primary" strokeWidth={2.5} />;
+  if (categoria.includes("Para jugar y estimular")) return <Gamepad2 className="h-5 w-5 inline-block mr-2 text-primary" strokeWidth={2.5} />;
+  if (categoria.includes("Cuidado y baño")) return <Bath className="h-5 w-5 inline-block mr-2 text-primary" strokeWidth={2.5} />;
+  if (categoria.includes("Recuerdos y especiales")) return <Camera className="h-5 w-5 inline-block mr-2 text-primary" strokeWidth={2.5} />;
+  if (categoria.includes("Apoyo en la crianza")) return <Droplet className="h-5 w-5 inline-block mr-2 text-primary" strokeWidth={2.5} />;
+  if (categoria.includes("Para hacerles la vida más fácil")) return <Heart className="h-5 w-5 inline-block mr-2 text-primary" strokeWidth={2.5} />;
+  return null;
+};
+
+// Función para remover emojis de las categorías
+const removeEmoji = (text: string) => {
+  return text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+};
 
 export function AdminPanel() {
   const navigate = useNavigate();
@@ -161,7 +177,7 @@ export function AdminPanel() {
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" strokeWidth={2} />
       </div>
     );
   }
@@ -185,7 +201,7 @@ export function AdminPanel() {
               title="Volver a la lista"
               className="rounded-xl hover:bg-primary/10"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5" strokeWidth={2} />
             </Button>
             <div>
               <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Panel de Administración</h1>
@@ -199,7 +215,7 @@ export function AdminPanel() {
             onClick={handleCreate}
             className="gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4" strokeWidth={2} />
             <span className="hidden sm:inline">Nuevo Regalo</span>
           </Button>
         </div>
@@ -214,7 +230,7 @@ export function AdminPanel() {
           >
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-                <Gift className="h-6 w-6 text-muted-foreground" />
+                <Gift className="h-6 w-6 text-muted-foreground" strokeWidth={2} />
               </div>
               <p className="mb-4 text-base font-medium text-muted-foreground">
                 No hay regalos aún
@@ -232,7 +248,7 @@ export function AdminPanel() {
                 
                 giftsList.forEach((gift) => {
                   const destinatario = gift.destinatario || "Sin categoría";
-                  const categoria = gift.categoria_regalos || "Sin categoría";
+                  const categoria = gift.categoria_regalos || "Otros Regalos";
                   
                   if (!grouped[destinatario]) {
                     grouped[destinatario] = {};
@@ -268,8 +284,9 @@ export function AdminPanel() {
                   transition={{ duration: 0.5, delay: destinatarioIndex * 0.1 }}
                   className="mb-10"
                 >
-                  <h3 className="mb-6 text-xl font-semibold text-foreground">
-                    🎀 Regalos para {destinatario}
+                  <h3 className="mb-6 text-xl font-semibold text-foreground flex items-center gap-2">
+                    <Gift className="h-5 w-5 text-primary" strokeWidth={2} />
+                    Regalos para {destinatario}
                   </h3>
                   
                   {Object.keys(groupedGifts[destinatario]).sort().map((categoria, categoriaIndex) => {
@@ -291,8 +308,9 @@ export function AdminPanel() {
                         transition={{ duration: 0.5, delay: categoriaIndex * 0.05 }}
                         className="mb-8"
                       >
-                        <h4 className="mb-4 text-base font-medium text-muted-foreground">
-                          {categoria} ({categoriaGifts.length})
+                        <h4 className="mb-4 text-base font-medium text-muted-foreground flex items-center">
+                          {getCategoryIcon(categoria)}
+                          {removeEmoji(categoria)} ({categoriaGifts.length})
                         </h4>
                         <DndContext
                           sensors={sensors}
